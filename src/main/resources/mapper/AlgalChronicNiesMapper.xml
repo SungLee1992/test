@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nwafu.cie.toxicitypred.dao.AlgalChronicNiesDao" >
+  <resultMap id="BaseResultMap" type="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronicNies" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cas_no" property="casNo" jdbcType="VARCHAR" />
+    <result column="smiles" property="smiles" jdbcType="VARCHAR" />
+    <result column="SpMax6_Bhm" property="spmax6Bhm" jdbcType="DOUBLE" />
+    <result column="GATS5i" property="gats5i" jdbcType="DOUBLE" />
+    <result column="Mor15s" property="mor15s" jdbcType="DOUBLE" />
+    <result column="logKow" property="logkow" jdbcType="DOUBLE" />
+    <result column="ATS6m" property="ats6m" jdbcType="DOUBLE" />
+    <result column="NOEC_72h" property="noec72h" jdbcType="VARCHAR" />
+    <result column="exp_value" property="expValue" jdbcType="VARCHAR" />
+    <result column="pre_value" property="preValue" jdbcType="VARCHAR" />
+    <result column="datatype" property="datatype" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cas_no, smiles, SpMax6_Bhm, GATS5i, Mor15s, logKow, ATS6m, NOEC_72h, exp_value, 
+    pre_value, datatype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from algal_chronic_nies
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from algal_chronic_nies
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronicNies" >
+    insert into algal_chronic_nies (id, cas_no, smiles, 
+      SpMax6_Bhm, GATS5i, Mor15s, 
+      logKow, ATS6m, NOEC_72h, 
+      exp_value, pre_value, datatype
+      )
+    values (#{id,jdbcType=INTEGER}, #{casNo,jdbcType=VARCHAR}, #{smiles,jdbcType=VARCHAR}, 
+      #{spmax6Bhm,jdbcType=DOUBLE}, #{gats5i,jdbcType=DOUBLE}, #{mor15s,jdbcType=DOUBLE}, 
+      #{logkow,jdbcType=DOUBLE}, #{ats6m,jdbcType=DOUBLE}, #{noec72h,jdbcType=VARCHAR}, 
+      #{expValue,jdbcType=VARCHAR}, #{preValue,jdbcType=VARCHAR}, #{datatype,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronicNies" >
+    insert into algal_chronic_nies
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="casNo != null" >
+        cas_no,
+      </if>
+      <if test="smiles != null" >
+        smiles,
+      </if>
+      <if test="spmax6Bhm != null" >
+        SpMax6_Bhm,
+      </if>
+      <if test="gats5i != null" >
+        GATS5i,
+      </if>
+      <if test="mor15s != null" >
+        Mor15s,
+      </if>
+      <if test="logkow != null" >
+        logKow,
+      </if>
+      <if test="ats6m != null" >
+        ATS6m,
+      </if>
+      <if test="noec72h != null" >
+        NOEC_72h,
+      </if>
+      <if test="expValue != null" >
+        exp_value,
+      </if>
+      <if test="preValue != null" >
+        pre_value,
+      </if>
+      <if test="datatype != null" >
+        datatype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="casNo != null" >
+        #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="spmax6Bhm != null" >
+        #{spmax6Bhm,jdbcType=DOUBLE},
+      </if>
+      <if test="gats5i != null" >
+        #{gats5i,jdbcType=DOUBLE},
+      </if>
+      <if test="mor15s != null" >
+        #{mor15s,jdbcType=DOUBLE},
+      </if>
+      <if test="logkow != null" >
+        #{logkow,jdbcType=DOUBLE},
+      </if>
+      <if test="ats6m != null" >
+        #{ats6m,jdbcType=DOUBLE},
+      </if>
+      <if test="noec72h != null" >
+        #{noec72h,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        #{datatype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronicNies" >
+    update algal_chronic_nies
+    <set >
+      <if test="casNo != null" >
+        cas_no = #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="spmax6Bhm != null" >
+        SpMax6_Bhm = #{spmax6Bhm,jdbcType=DOUBLE},
+      </if>
+      <if test="gats5i != null" >
+        GATS5i = #{gats5i,jdbcType=DOUBLE},
+      </if>
+      <if test="mor15s != null" >
+        Mor15s = #{mor15s,jdbcType=DOUBLE},
+      </if>
+      <if test="logkow != null" >
+        logKow = #{logkow,jdbcType=DOUBLE},
+      </if>
+      <if test="ats6m != null" >
+        ATS6m = #{ats6m,jdbcType=DOUBLE},
+      </if>
+      <if test="noec72h != null" >
+        NOEC_72h = #{noec72h,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        exp_value = #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        pre_value = #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        datatype = #{datatype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronicNies" >
+    update algal_chronic_nies
+    set cas_no = #{casNo,jdbcType=VARCHAR},
+      smiles = #{smiles,jdbcType=VARCHAR},
+      SpMax6_Bhm = #{spmax6Bhm,jdbcType=DOUBLE},
+      GATS5i = #{gats5i,jdbcType=DOUBLE},
+      Mor15s = #{mor15s,jdbcType=DOUBLE},
+      logKow = #{logkow,jdbcType=DOUBLE},
+      ATS6m = #{ats6m,jdbcType=DOUBLE},
+      NOEC_72h = #{noec72h,jdbcType=VARCHAR},
+      exp_value = #{expValue,jdbcType=VARCHAR},
+      pre_value = #{preValue,jdbcType=VARCHAR},
+      datatype = #{datatype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

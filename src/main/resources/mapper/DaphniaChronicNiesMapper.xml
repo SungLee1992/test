@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nwafu.cie.toxicitypred.dao.DaphniaChronicNiesDao" >
+  <resultMap id="BaseResultMap" type="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronicNies" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cas_no" property="casNo" jdbcType="VARCHAR" />
+    <result column="smiles" property="smiles" jdbcType="VARCHAR" />
+    <result column="MLOGP" property="mlogp" jdbcType="DOUBLE" />
+    <result column="SpMax_EAri" property="spmaxEari" jdbcType="DOUBLE" />
+    <result column="Mor04s" property="mor04s" jdbcType="DOUBLE" />
+    <result column="SM02_AEAdm" property="sm02Aeadm" jdbcType="DOUBLE" />
+    <result column="RDF075s" property="rdf075s" jdbcType="DOUBLE" />
+    <result column="NOEC_21d" property="noec21d" jdbcType="VARCHAR" />
+    <result column="exp_value" property="expValue" jdbcType="VARCHAR" />
+    <result column="pre_value" property="preValue" jdbcType="VARCHAR" />
+    <result column="datatype" property="datatype" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cas_no, smiles, MLOGP, SpMax_EAri, Mor04s, SM02_AEAdm, RDF075s, NOEC_21d, exp_value, 
+    pre_value, datatype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from daphnia_chronic_nies
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from daphnia_chronic_nies
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronicNies" >
+    insert into daphnia_chronic_nies (id, cas_no, smiles, 
+      MLOGP, SpMax_EAri, Mor04s, 
+      SM02_AEAdm, RDF075s, NOEC_21d, 
+      exp_value, pre_value, datatype
+      )
+    values (#{id,jdbcType=INTEGER}, #{casNo,jdbcType=VARCHAR}, #{smiles,jdbcType=VARCHAR}, 
+      #{mlogp,jdbcType=DOUBLE}, #{spmaxEari,jdbcType=DOUBLE}, #{mor04s,jdbcType=DOUBLE}, 
+      #{sm02Aeadm,jdbcType=DOUBLE}, #{rdf075s,jdbcType=DOUBLE}, #{noec21d,jdbcType=VARCHAR}, 
+      #{expValue,jdbcType=VARCHAR}, #{preValue,jdbcType=VARCHAR}, #{datatype,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronicNies" >
+    insert into daphnia_chronic_nies
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="casNo != null" >
+        cas_no,
+      </if>
+      <if test="smiles != null" >
+        smiles,
+      </if>
+      <if test="mlogp != null" >
+        MLOGP,
+      </if>
+      <if test="spmaxEari != null" >
+        SpMax_EAri,
+      </if>
+      <if test="mor04s != null" >
+        Mor04s,
+      </if>
+      <if test="sm02Aeadm != null" >
+        SM02_AEAdm,
+      </if>
+      <if test="rdf075s != null" >
+        RDF075s,
+      </if>
+      <if test="noec21d != null" >
+        NOEC_21d,
+      </if>
+      <if test="expValue != null" >
+        exp_value,
+      </if>
+      <if test="preValue != null" >
+        pre_value,
+      </if>
+      <if test="datatype != null" >
+        datatype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="casNo != null" >
+        #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="mlogp != null" >
+        #{mlogp,jdbcType=DOUBLE},
+      </if>
+      <if test="spmaxEari != null" >
+        #{spmaxEari,jdbcType=DOUBLE},
+      </if>
+      <if test="mor04s != null" >
+        #{mor04s,jdbcType=DOUBLE},
+      </if>
+      <if test="sm02Aeadm != null" >
+        #{sm02Aeadm,jdbcType=DOUBLE},
+      </if>
+      <if test="rdf075s != null" >
+        #{rdf075s,jdbcType=DOUBLE},
+      </if>
+      <if test="noec21d != null" >
+        #{noec21d,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        #{datatype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronicNies" >
+    update daphnia_chronic_nies
+    <set >
+      <if test="casNo != null" >
+        cas_no = #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="mlogp != null" >
+        MLOGP = #{mlogp,jdbcType=DOUBLE},
+      </if>
+      <if test="spmaxEari != null" >
+        SpMax_EAri = #{spmaxEari,jdbcType=DOUBLE},
+      </if>
+      <if test="mor04s != null" >
+        Mor04s = #{mor04s,jdbcType=DOUBLE},
+      </if>
+      <if test="sm02Aeadm != null" >
+        SM02_AEAdm = #{sm02Aeadm,jdbcType=DOUBLE},
+      </if>
+      <if test="rdf075s != null" >
+        RDF075s = #{rdf075s,jdbcType=DOUBLE},
+      </if>
+      <if test="noec21d != null" >
+        NOEC_21d = #{noec21d,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        exp_value = #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        pre_value = #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        datatype = #{datatype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronicNies" >
+    update daphnia_chronic_nies
+    set cas_no = #{casNo,jdbcType=VARCHAR},
+      smiles = #{smiles,jdbcType=VARCHAR},
+      MLOGP = #{mlogp,jdbcType=DOUBLE},
+      SpMax_EAri = #{spmaxEari,jdbcType=DOUBLE},
+      Mor04s = #{mor04s,jdbcType=DOUBLE},
+      SM02_AEAdm = #{sm02Aeadm,jdbcType=DOUBLE},
+      RDF075s = #{rdf075s,jdbcType=DOUBLE},
+      NOEC_21d = #{noec21d,jdbcType=VARCHAR},
+      exp_value = #{expValue,jdbcType=VARCHAR},
+      pre_value = #{preValue,jdbcType=VARCHAR},
+      datatype = #{datatype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

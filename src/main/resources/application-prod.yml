@@ -1,0 +1,4 @@
+server:
+  servlet:
+    context-path: /toxicitypred #工程名
+  port: 8080

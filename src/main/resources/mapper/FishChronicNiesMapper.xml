@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nwafu.cie.toxicitypred.dao.FishChronicNiesDao" >
+  <resultMap id="BaseResultMap" type="cn.edu.nwafu.cie.toxicitypred.entities.FishChronicNies" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cas_no" property="casNo" jdbcType="VARCHAR" />
+    <result column="smiles" property="smiles" jdbcType="VARCHAR" />
+    <result column="SpMaxA_EAdm" property="spmaxaEadm" jdbcType="DOUBLE" />
+    <result column="MPC07" property="mpc07" jdbcType="DOUBLE" />
+    <result column="CATS2D_05_LL" property="cats2d05Ll" jdbcType="DOUBLE" />
+    <result column="LC50_96h" property="lc5096h" jdbcType="VARCHAR" />
+    <result column="exp_value" property="expValue" jdbcType="VARCHAR" />
+    <result column="pre_value" property="preValue" jdbcType="VARCHAR" />
+    <result column="datatype" property="datatype" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cas_no, smiles, SpMaxA_EAdm, MPC07, CATS2D_05_LL, LC50_96h, exp_value, pre_value, 
+    datatype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from fish_chronic_nies
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from fish_chronic_nies
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.FishChronicNies" >
+    insert into fish_chronic_nies (id, cas_no, smiles, 
+      SpMaxA_EAdm, MPC07, CATS2D_05_LL, 
+      LC50_96h, exp_value, pre_value, 
+      datatype)
+    values (#{id,jdbcType=INTEGER}, #{casNo,jdbcType=VARCHAR}, #{smiles,jdbcType=VARCHAR}, 
+      #{spmaxaEadm,jdbcType=DOUBLE}, #{mpc07,jdbcType=DOUBLE}, #{cats2d05Ll,jdbcType=DOUBLE}, 
+      #{lc5096h,jdbcType=VARCHAR}, #{expValue,jdbcType=VARCHAR}, #{preValue,jdbcType=VARCHAR}, 
+      #{datatype,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.FishChronicNies" >
+    insert into fish_chronic_nies
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="casNo != null" >
+        cas_no,
+      </if>
+      <if test="smiles != null" >
+        smiles,
+      </if>
+      <if test="spmaxaEadm != null" >
+        SpMaxA_EAdm,
+      </if>
+      <if test="mpc07 != null" >
+        MPC07,
+      </if>
+      <if test="cats2d05Ll != null" >
+        CATS2D_05_LL,
+      </if>
+      <if test="lc5096h != null" >
+        LC50_96h,
+      </if>
+      <if test="expValue != null" >
+        exp_value,
+      </if>
+      <if test="preValue != null" >
+        pre_value,
+      </if>
+      <if test="datatype != null" >
+        datatype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="casNo != null" >
+        #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="spmaxaEadm != null" >
+        #{spmaxaEadm,jdbcType=DOUBLE},
+      </if>
+      <if test="mpc07 != null" >
+        #{mpc07,jdbcType=DOUBLE},
+      </if>
+      <if test="cats2d05Ll != null" >
+        #{cats2d05Ll,jdbcType=DOUBLE},
+      </if>
+      <if test="lc5096h != null" >
+        #{lc5096h,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        #{datatype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.FishChronicNies" >
+    update fish_chronic_nies
+    <set >
+      <if test="casNo != null" >
+        cas_no = #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="spmaxaEadm != null" >
+        SpMaxA_EAdm = #{spmaxaEadm,jdbcType=DOUBLE},
+      </if>
+      <if test="mpc07 != null" >
+        MPC07 = #{mpc07,jdbcType=DOUBLE},
+      </if>
+      <if test="cats2d05Ll != null" >
+        CATS2D_05_LL = #{cats2d05Ll,jdbcType=DOUBLE},
+      </if>
+      <if test="lc5096h != null" >
+        LC50_96h = #{lc5096h,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        exp_value = #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        pre_value = #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        datatype = #{datatype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.FishChronicNies" >
+    update fish_chronic_nies
+    set cas_no = #{casNo,jdbcType=VARCHAR},
+      smiles = #{smiles,jdbcType=VARCHAR},
+      SpMaxA_EAdm = #{spmaxaEadm,jdbcType=DOUBLE},
+      MPC07 = #{mpc07,jdbcType=DOUBLE},
+      CATS2D_05_LL = #{cats2d05Ll,jdbcType=DOUBLE},
+      LC50_96h = #{lc5096h,jdbcType=VARCHAR},
+      exp_value = #{expValue,jdbcType=VARCHAR},
+      pre_value = #{preValue,jdbcType=VARCHAR},
+      datatype = #{datatype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

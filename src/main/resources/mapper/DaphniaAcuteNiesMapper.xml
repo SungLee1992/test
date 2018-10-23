@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nwafu.cie.toxicitypred.dao.DaphniaAcuteNiesDao" >
+  <resultMap id="BaseResultMap" type="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcuteNies" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cas_no" property="casNo" jdbcType="VARCHAR" />
+    <result column="smiles" property="smiles" jdbcType="VARCHAR" />
+    <result column="nCrp" property="ncrp" jdbcType="DOUBLE" />
+    <result column="F04NS" property="f04ns" jdbcType="DOUBLE" />
+    <result column="Bo4OO" property="bo4oo" jdbcType="DOUBLE" />
+    <result column="F08OO" property="f08oo" jdbcType="DOUBLE" />
+    <result column="Eig08_AEAbo" property="eig08Aeabo" jdbcType="DOUBLE" />
+    <result column="B02NCl" property="b02ncl" jdbcType="DOUBLE" />
+    <result column="EC50_48h" property="ec5048h" jdbcType="VARCHAR" />
+    <result column="exp_value" property="expValue" jdbcType="VARCHAR" />
+    <result column="pre_value" property="preValue" jdbcType="VARCHAR" />
+    <result column="datatype" property="datatype" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cas_no, smiles, nCrp, F04NS, Bo4OO, F08OO, Eig08_AEAbo, B02NCl, EC50_48h, exp_value, 
+    pre_value, datatype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from daphnia_acute_nies
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from daphnia_acute_nies
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcuteNies" >
+    insert into daphnia_acute_nies (id, cas_no, smiles, 
+      nCrp, F04NS, Bo4OO, F08OO, 
+      Eig08_AEAbo, B02NCl, EC50_48h, 
+      exp_value, pre_value, datatype
+      )
+    values (#{id,jdbcType=INTEGER}, #{casNo,jdbcType=VARCHAR}, #{smiles,jdbcType=VARCHAR}, 
+      #{ncrp,jdbcType=DOUBLE}, #{f04ns,jdbcType=DOUBLE}, #{bo4oo,jdbcType=DOUBLE}, #{f08oo,jdbcType=DOUBLE}, 
+      #{eig08Aeabo,jdbcType=DOUBLE}, #{b02ncl,jdbcType=DOUBLE}, #{ec5048h,jdbcType=VARCHAR}, 
+      #{expValue,jdbcType=VARCHAR}, #{preValue,jdbcType=VARCHAR}, #{datatype,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcuteNies" >
+    insert into daphnia_acute_nies
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="casNo != null" >
+        cas_no,
+      </if>
+      <if test="smiles != null" >
+        smiles,
+      </if>
+      <if test="ncrp != null" >
+        nCrp,
+      </if>
+      <if test="f04ns != null" >
+        F04NS,
+      </if>
+      <if test="bo4oo != null" >
+        Bo4OO,
+      </if>
+      <if test="f08oo != null" >
+        F08OO,
+      </if>
+      <if test="eig08Aeabo != null" >
+        Eig08_AEAbo,
+      </if>
+      <if test="b02ncl != null" >
+        B02NCl,
+      </if>
+      <if test="ec5048h != null" >
+        EC50_48h,
+      </if>
+      <if test="expValue != null" >
+        exp_value,
+      </if>
+      <if test="preValue != null" >
+        pre_value,
+      </if>
+      <if test="datatype != null" >
+        datatype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="casNo != null" >
+        #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="ncrp != null" >
+        #{ncrp,jdbcType=DOUBLE},
+      </if>
+      <if test="f04ns != null" >
+        #{f04ns,jdbcType=DOUBLE},
+      </if>
+      <if test="bo4oo != null" >
+        #{bo4oo,jdbcType=DOUBLE},
+      </if>
+      <if test="f08oo != null" >
+        #{f08oo,jdbcType=DOUBLE},
+      </if>
+      <if test="eig08Aeabo != null" >
+        #{eig08Aeabo,jdbcType=DOUBLE},
+      </if>
+      <if test="b02ncl != null" >
+        #{b02ncl,jdbcType=DOUBLE},
+      </if>
+      <if test="ec5048h != null" >
+        #{ec5048h,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        #{datatype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcuteNies" >
+    update daphnia_acute_nies
+    <set >
+      <if test="casNo != null" >
+        cas_no = #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="ncrp != null" >
+        nCrp = #{ncrp,jdbcType=DOUBLE},
+      </if>
+      <if test="f04ns != null" >
+        F04NS = #{f04ns,jdbcType=DOUBLE},
+      </if>
+      <if test="bo4oo != null" >
+        Bo4OO = #{bo4oo,jdbcType=DOUBLE},
+      </if>
+      <if test="f08oo != null" >
+        F08OO = #{f08oo,jdbcType=DOUBLE},
+      </if>
+      <if test="eig08Aeabo != null" >
+        Eig08_AEAbo = #{eig08Aeabo,jdbcType=DOUBLE},
+      </if>
+      <if test="b02ncl != null" >
+        B02NCl = #{b02ncl,jdbcType=DOUBLE},
+      </if>
+      <if test="ec5048h != null" >
+        EC50_48h = #{ec5048h,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        exp_value = #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        pre_value = #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        datatype = #{datatype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcuteNies" >
+    update daphnia_acute_nies
+    set cas_no = #{casNo,jdbcType=VARCHAR},
+      smiles = #{smiles,jdbcType=VARCHAR},
+      nCrp = #{ncrp,jdbcType=DOUBLE},
+      F04NS = #{f04ns,jdbcType=DOUBLE},
+      Bo4OO = #{bo4oo,jdbcType=DOUBLE},
+      F08OO = #{f08oo,jdbcType=DOUBLE},
+      Eig08_AEAbo = #{eig08Aeabo,jdbcType=DOUBLE},
+      B02NCl = #{b02ncl,jdbcType=DOUBLE},
+      EC50_48h = #{ec5048h,jdbcType=VARCHAR},
+      exp_value = #{expValue,jdbcType=VARCHAR},
+      pre_value = #{preValue,jdbcType=VARCHAR},
+      datatype = #{datatype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
