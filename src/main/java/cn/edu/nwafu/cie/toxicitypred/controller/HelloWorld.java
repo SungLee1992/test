@@ -61,6 +61,7 @@ public class HelloWorld {
                 System.out.println("不存在"+str);
             }
         }
+        reader.close();
     }
     private String creatMD5(String loginNum){
         // 生成一个MD5加密计算摘要

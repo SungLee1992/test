@@ -47,12 +47,24 @@ public abstract class BaseService<T> {
         return casNo;
     }
 
-    //TODO smi表达式存到文件中
-    public File getSmiFile(String casNo,String smiles,String smiFilesDir) throws Exception {
-        File smiFile = new File(smiFilesDir+"/"+casNo+".smi");
-        BufferedWriter bfw = new BufferedWriter(new FileWriter(smiFile));
+    /**
+     * @param: [casNo, smiles, smiFilesDir]
+     * @return: java.io.File
+     * 将smiles表达式转为smi文件（供溞急性毒性记录和鱼类慢性记录使用）
+     */
+    public File getSmiFile(String casNo, String smiles, String smiFilesDir) {
+        File smiFile = new File(smiFilesDir + "/" + casNo.trim() + ".smi");
+        try {
+            //将smiles写入文件中
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(smiFile));
+            bfw.write(smiles);
+            bfw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return smiFile;
     }
+
     /***********************************  smi -> mop  ***********************************/
     /**
      * @param: [casNo, smiles, mopFilePath]
@@ -202,6 +214,7 @@ public abstract class BaseService<T> {
         return true;
     }
 
+    //TODO 测试该方法
     public int smiFilesToDragonOutFiles(String smiDir, String dragonOutFilesDir) {
         if (!FileUtil.validateDir(dragonOutFilesDir)) {
             logger.warn(smiDir + "***********描述符文件保存的目标目录不合法！");

@@ -22,7 +22,12 @@ public class DaphniaAcuteController {
     /**
      * 溞类急性毒性记录的smi文件存放路径
      **/
-    private static String trainDragonOutPath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/trainfiles"; //smi文件路径（训练集）
-    private static String vldDragonOutPath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/vldfiles";  //smi文件路径（验证集）
+    private static String trainSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/daphniaacute/trainfiles"; //smi文件路径（训练集）
+    private static String vldSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/daphniaacute/vldfiles";  //smi文件路径（验证集）
 
+    @RequestMapping("/algchr/smitrains")
+    public Result getSmiFile(){
+        daphniaAcuteService.getSmiFiles(trainSmiFilesPath,"train");
+        return Result.successWithoutData();
+    }
 }

@@ -17,7 +17,7 @@ public class FishChronicController {
     /**
      * 溞类急性毒性记录的smi文件存放路径
      **/
-    private static String trainDragonOutPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/trainfiles"; //smi文件路径（训练集）
-    private static String vldDragonOutPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vldfiles";  //smi文件路径（验证集）
+    private static String trainSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/fishchronic/trainfiles"; //smi文件路径（训练集）
+    private static String vldSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/fishchronic/vldfiles";  //smi文件路径（验证集）
 
 }
