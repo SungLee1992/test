@@ -8,8 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
-import java.io.FileFilter;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -46,6 +45,13 @@ public abstract class BaseService<T> {
         String toxicityFileName = toxicityFile.getName();
         String casNo = toxicityFileName.substring(0, toxicityFileName.lastIndexOf("."));
         return casNo;
+    }
+
+    //TODO smi表达式存到文件中
+    public File getSmiFile(String casNo,String smiles,String smiFilesDir) throws Exception {
+        File smiFile = new File(smiFilesDir+"/"+casNo+".smi");
+        BufferedWriter bfw = new BufferedWriter(new FileWriter(smiFile));
+        return smiFile;
     }
     /***********************************  smi -> mop  ***********************************/
     /**
