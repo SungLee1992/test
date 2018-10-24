@@ -2,6 +2,8 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 
 import cn.edu.nwafu.cie.toxicitypred.dao.BaseDao;
 import cn.edu.nwafu.cie.toxicitypred.common.CommandConstant;
+import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
+import cn.edu.nwafu.cie.toxicitypred.knn.KNN;
 import cn.edu.nwafu.cie.toxicitypred.utils.ExcuteCommandUtil;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
 import org.slf4j.Logger;
@@ -9,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,17 +56,20 @@ public abstract class BaseService<T> {
      * @return: java.io.File
      * 将smiles表达式转为smi文件（供溞急性毒性记录和鱼类慢性记录使用）
      */
-    public File getSmiFile(String casNo, String smiles, String smiFilesDir) {
+    public boolean getSmiFile(String casNo, String smiles, String smiFilesDir) {
         File smiFile = new File(smiFilesDir + "/" + casNo.trim() + ".smi");
         try {
             //将smiles写入文件中
             BufferedWriter bfw = new BufferedWriter(new FileWriter(smiFile));
             bfw.write(smiles);
             bfw.close();
+            System.out.println(casNo.trim() + ".smi 写入成功！");
         } catch (Exception e) {
             e.printStackTrace();
+            logger.warn(casNo.trim() + ".smi 写入失败！");
+            return false;
         }
-        return smiFile;
+        return true;
     }
 
     /***********************************  smi -> mop  ***********************************/
@@ -214,7 +221,11 @@ public abstract class BaseService<T> {
         return true;
     }
 
-    //TODO 测试该方法
+    /**
+     * @param: [smiDir, dragonOutFilesDir]
+     * @return: int
+     * 输入smi文件到dragon，计算得出描述符文件的批量执行方法
+     */
     public int smiFilesToDragonOutFiles(String smiDir, String dragonOutFilesDir) {
         if (!FileUtil.validateDir(dragonOutFilesDir)) {
             logger.warn(smiDir + "***********描述符文件保存的目标目录不合法！");
@@ -232,4 +243,64 @@ public abstract class BaseService<T> {
         }
         return numOfdragonOutFiles;
     }
+
+    /***********************************  knn相关的操作  ***********************************/
+    //TODO knn操作读文件
+
+    /**
+     * @param dataFile 数据文件
+     * @return 返回数据集
+     * 从数据文件中读取数据
+     */
+    public List<List<Double>> read(File dataFile) {
+        List<List<Double>> datas = new ArrayList<List<Double>>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(dataFile));
+            String data = br.readLine();
+            List<Double> desList = null;
+            while (data != null) {
+                String description[] = data.split(",");
+                desList = new ArrayList<Double>();
+                //从第1列开始（第0列为casNo）
+                for (int i = 1; i < description.length; i++) {
+                    desList.add(Double.parseDouble(description[i]));
+                }
+                datas.add(desList);
+                data = br.readLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return datas;
+    }
+
+    /**
+     * @param: []
+     * @return: void
+     */
+    public String runKnn(File trainFile, File vldFile) {
+        List<List<Double>> trainDatas = this.read(trainFile);
+        List<List<Double>> vldDatas = this.read(vldFile);
+        KNN knn = new KNN();
+        String preValue = null;
+        for (int i = 0; i < vldDatas.size(); i++) {
+            List<Double> vldData = vldDatas.get(i);
+            preValue = knn.knn(trainDatas, vldData, 3); //这里规定K取值
+
+            /********* 在生产环境中，以下可以不执行**********/
+            System.out.print("测试元组: ");
+            for (int j = 0; j < vldData.size(); j++) {
+                System.out.print(vldData.get(j) + " ");
+            }
+            System.out.print("类别为: ");
+            System.out.println(preValue);
+            /********* 在生产环境中，以上可以不执行**********/
+        }
+        return preValue;
+    }
+
+    //TODO 描述符写入文件中供knn用，文件存放在各自的dragonoutfiles目录下（在各自的Service中写）
+
+
+    //TODO 新化合物进入系统后的处理逻辑（在各自的Controller中写）
 }

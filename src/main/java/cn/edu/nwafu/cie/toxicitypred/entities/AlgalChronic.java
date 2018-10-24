@@ -3,7 +3,7 @@ package cn.edu.nwafu.cie.toxicitypred.entities;
 /**
  * 藻类慢性毒性
  */
-public class AlgalChronic {
+public class AlgalChronic implements Comparable<AlgalChronic> {
     private Integer id;
 
     private String casNo;
@@ -122,5 +122,10 @@ public class AlgalChronic {
 
     public void setDatatype(String datatype) {
         this.datatype = datatype == null ? null : datatype.trim();
+    }
+
+    @Override
+    public int compareTo(AlgalChronic o) {
+        return 0;
     }
 }

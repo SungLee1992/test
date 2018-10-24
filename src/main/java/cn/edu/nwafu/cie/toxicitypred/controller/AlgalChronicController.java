@@ -188,7 +188,7 @@ public class AlgalChronicController {
 
     /*************************************************** smi->描述符 ****************************************************/
     @RequestMapping("/algchr/desfiles")
-    public Result getDragonOutFile(){
+    public Result getDragonOutFiles(){
         File simFile = new File(trainSmiFilesPath+"/000050-06-6.smi");
         boolean flag = algalChronicService.smiFileToDragonOutFile(simFile,trainDragonOutPath);
         if(!flag){
@@ -196,4 +196,6 @@ public class AlgalChronicController {
         }
         return Result.successWithoutData();
     }
+
+    /*************************************************** dragon计算仍有出错，训练集172/438项，验证集47/110项 ****************************************************/
 }

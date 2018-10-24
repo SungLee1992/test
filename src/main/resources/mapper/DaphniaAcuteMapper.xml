@@ -20,6 +20,12 @@
     id, cas_no, smiles, nCrp, F04NS, Bo4OO, F08OO, Eig08_AEAbo, B02NCl, EC50_48h, exp_value, 
     pre_value, datatype
   </sql>
+  <select id="getByDataType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from daphnia_acute
+    where datatype  = #{dataType}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

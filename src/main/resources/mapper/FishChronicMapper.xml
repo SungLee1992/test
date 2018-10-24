@@ -17,6 +17,12 @@
     id, cas_no, smiles, SpMaxA_EAdm, MPC07, CATS2D_05_LL, LC50_96h, exp_value, pre_value, 
     datatype
   </sql>
+  <select id="getByDataType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from fish_chronic
+    where datatype  = #{dataType}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

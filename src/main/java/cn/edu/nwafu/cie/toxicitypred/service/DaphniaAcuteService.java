@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,16 +28,19 @@ public class DaphniaAcuteService extends BaseService<DaphniaAcute> {
      * @return: boolean
      * 将溞类急性毒性的smiles表达式转为smi文件
      */
-    //TODO 测试该方法
-    public boolean getSmiFiles(String smiFilesDir,String dataType) {
+
+    public int getSmiFiles(String smiFilesDir, String dataType) {
         if (!FileUtil.validateDir(smiFilesDir)) {
             logger.warn(smiFilesDir + "目录不合法！");
-            return false;
+            return 0;
         }
-        List<DaphniaAcute> daphniaAcuteList = daphniaAcuteDao.getByDataType(dataType);
+        ArrayList<DaphniaAcute> daphniaAcuteList = (ArrayList<DaphniaAcute>) daphniaAcuteDao.getByDataType(dataType);
+        int numOfdaphniaAcutes = 0;
         for (DaphniaAcute daphniaAcute : daphniaAcuteList) {
-            super.getSmiFile(daphniaAcute.getCasNo(), daphniaAcute.getSmiles(), smiFilesDir);
+            if (getSmiFile(daphniaAcute.getCasNo(), daphniaAcute.getSmiles(), smiFilesDir)) {
+                numOfdaphniaAcutes++;
+            }
         }
-        return true;
+        return numOfdaphniaAcutes;
     }
 }
