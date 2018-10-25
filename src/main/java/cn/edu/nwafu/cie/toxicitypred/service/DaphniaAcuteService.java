@@ -8,9 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: SungLee
@@ -37,7 +36,9 @@ public class DaphniaAcuteService extends BaseService<DaphniaAcute> {
         ArrayList<DaphniaAcute> daphniaAcuteList = (ArrayList<DaphniaAcute>) daphniaAcuteDao.getByDataType(dataType);
         int numOfdaphniaAcutes = 0;
         for (DaphniaAcute daphniaAcute : daphniaAcuteList) {
-            if (getSmiFile(daphniaAcute.getCasNo(), daphniaAcute.getSmiles(), smiFilesDir)) {
+            //构造smi文件
+            File smiFile = new File(smiFilesDir + "/" + daphniaAcute.getCasNo().trim() + ".smi");
+            if (super.writeFile(smiFile, daphniaAcute.getSmiles(), false)) {
                 numOfdaphniaAcutes++;
             }
         }

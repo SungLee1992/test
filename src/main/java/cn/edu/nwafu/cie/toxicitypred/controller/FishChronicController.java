@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author: SungLee
@@ -28,6 +30,8 @@ public class FishChronicController {
     private static String trainDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/trainfiles"; //smi文件路径（训练集）
     private static String vldDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vldfiles";  //smi文件路径（验证集）
 
+    private static String trainDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/traindes.csv";
+    private static String vldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vlddes.csv";
     /*************************************************** smiles->smi文件 ****************************************************/
     @RequestMapping("/fishchr/smitrains")
     public Result getTrainSmiFile(){
@@ -98,5 +102,51 @@ public class FishChronicController {
         return Result.success(resultMap);
     }
 
+    /*************************************************** 读数据库生成描述符的csv件，用于knn ****************************************************/
+    @RequestMapping("/fishchr/trainscsv")
+    public Result getTrainsCSV(){
+        File trainDesFile = new File(trainDesFilePath);
+        int trainSize = fishChronicService.getDesFile(trainDesFile,"train");
+        if (trainSize == 0) {
+            return Result.errorMsg("鱼类慢性毒性训练集数据在转为csv文件时出错！");
+        }
+        return Result.success(trainSize);
+    }
+
+    @RequestMapping("/fishchr/vldscsv")
+    public Result getVldsCSV(){
+        File vldDesFile = new File(trainDesFilePath);
+        int vldSize = fishChronicService.getDesFile(vldDesFile,"validate");
+        if (vldSize == 0) {
+            return Result.errorMsg("鱼类慢性毒性验证集数据在转为csv文件时出错！");
+        }
+        return Result.success(vldSize);
+    }
+
+    @RequestMapping("/fishchr/descsv")
+    public Result getDesCSV(){
+        File trainDesFile = new File(trainDesFilePath);
+        File vldDesFile = new File(vldDesFilePath);
+        int trainSize = fishChronicService.getDesFile(trainDesFile,"train");
+        if (trainSize == 0) {
+            return Result.errorMsg("鱼类慢性毒性训练集数据在转为csv文件时出错！");
+        }
+        int vldSize = fishChronicService.getDesFile(vldDesFile,"validate");
+        if (vldSize == 0) {
+            return Result.errorMsg("鱼类慢性毒性验证集数据在转为csv文件时出错！");
+        }
+
+        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("trainSize", trainSize);
+        resultMap.put("vldSize", vldSize);
+        return Result.success(resultMap);
+    }
     /*************************************************** 数据预处理已全部完成，训练集503，验证集127，只剩knn ****************************************************/
+    @RequestMapping("/fishchr/vldknn")
+    public Result vldKnnPre(){
+        File trainDesFile = new File(trainDesFilePath);
+        File vldDesFile = new File(vldDesFilePath);
+        fishChronicService.runKnn(trainDesFile,vldDesFile);
+        return Result.successWithoutData();
+    }
 }

@@ -2,7 +2,6 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 
 import cn.edu.nwafu.cie.toxicitypred.dao.BaseDao;
 import cn.edu.nwafu.cie.toxicitypred.common.CommandConstant;
-import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.knn.KNN;
 import cn.edu.nwafu.cie.toxicitypred.utils.ExcuteCommandUtil;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,21 +50,21 @@ public abstract class BaseService<T> {
     }
 
     /**
-     * @param: [casNo, smiles, smiFilesDir]
-     * @return: java.io.File
-     * 将smiles表达式转为smi文件（供溞急性毒性记录和鱼类慢性记录使用）
+     * @param: [file, content，append] append表示写文件的方式，true为追加，false为覆盖
+     * @return: boolean
+     * 1.将smiles表达式转为smi文件（供溞急性毒性记录和鱼类慢性记录使用）
+     * 2.将数据库中的记录（描述符）写入des文件中
      */
-    public boolean getSmiFile(String casNo, String smiles, String smiFilesDir) {
-        File smiFile = new File(smiFilesDir + "/" + casNo.trim() + ".smi");
+    public boolean writeFile(File file, String content, boolean append) {
         try {
-            //将smiles写入文件中
-            BufferedWriter bfw = new BufferedWriter(new FileWriter(smiFile));
-            bfw.write(smiles);
+            //将content写入文件中
+            BufferedWriter bfw = new BufferedWriter(new FileWriter(file, append));
+            bfw.write(content);
             bfw.close();
-            System.out.println(casNo.trim() + ".smi 写入成功！");
+            System.out.println(content + "写入成功！");
         } catch (Exception e) {
             e.printStackTrace();
-            logger.warn(casNo.trim() + ".smi 写入失败！");
+            logger.warn(content + "写入失败！");
             return false;
         }
         return true;
@@ -278,14 +276,14 @@ public abstract class BaseService<T> {
      * @param: []
      * @return: void
      */
-    public String runKnn(File trainFile, File vldFile) {
+    public void runKnn(File trainFile, File vldFile) {
         List<List<Double>> trainDatas = this.read(trainFile);
         List<List<Double>> vldDatas = this.read(vldFile);
         KNN knn = new KNN();
-        String preValue = null;
+        int preValue = -1;
         for (int i = 0; i < vldDatas.size(); i++) {
             List<Double> vldData = vldDatas.get(i);
-            preValue = knn.knn(trainDatas, vldData, 3); //这里规定K取值
+            preValue = Math.round(Float.parseFloat((knn.knn(trainDatas, vldData, 3)))); //这里规定K取值
 
             /********* 在生产环境中，以下可以不执行**********/
             System.out.print("测试元组: ");
@@ -296,7 +294,6 @@ public abstract class BaseService<T> {
             System.out.println(preValue);
             /********* 在生产环境中，以上可以不执行**********/
         }
-        return preValue;
     }
 
     //TODO 描述符写入文件中供knn用，文件存放在各自的dragonoutfiles目录下（在各自的Service中写）
