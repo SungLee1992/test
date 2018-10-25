@@ -1,8 +1,8 @@
 package cn.edu.nwafu.cie.toxicitypred.controller;
 
 import cn.edu.nwafu.cie.toxicitypred.common.Result;
-import cn.edu.nwafu.cie.toxicitypred.entities.User;
-import cn.edu.nwafu.cie.toxicitypred.service.IRegService;
+import cn.edu.nwafu.cie.toxicitypred.entities.*;
+import cn.edu.nwafu.cie.toxicitypred.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -16,9 +16,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: SungLee
@@ -30,23 +28,44 @@ import java.util.List;
 public class HelloWorld {
     @Autowired
     private IRegService regService;
+    @Autowired
+    private AlgalChronicService algalChronicService;
+    @Autowired
+    private DaphniaAcuteService daphniaAcuteService;
+    @Autowired
+    private FishChronicService fishChronicService;
+    @Autowired
+    private DaphniaChronicService daphniaChronicService;
+
     @RequestMapping("/hello")
     String home() {
         return "Hello World";
     }
+
     @RequestMapping("/reg")
     @ResponseBody
-    Boolean reg(@RequestParam("loginPwd") String loginNum, @RequestParam("userId") String userId ){
+    Boolean reg(@RequestParam("loginPwd") String loginNum, @RequestParam("userId") String userId) {
         String pwd = creatMD5(loginNum);
-        System.out.println(userId+":"+loginNum);
-        regService.regUser("3", userId,pwd);
+        System.out.println(userId + ":" + loginNum);
+        regService.regUser("3", userId, pwd);
         return true;
     }
+
     @RequestMapping("/test")
-    public void get()throws Exception {
-        String[] text=new String[]{"NAME","Se","MW"};
-        File file = new File("E:\\项目\\南京(新)\\服务器备份\\描述符.txt");
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+    public Map<String, Object> get() throws Exception {
+        String[] text = new String[]{"NAME", "Se", "MW"};
+        File file = new File("D:\\000050-06-6.txt");
+        Map<String, Object> map = new HashMap<>();
+        AlgalChronic algalChronic = algalChronicService.getDescription(file, AlgalChronic.class);
+        FishChronic fishChronic = fishChronicService.getDescription(file, FishChronic.class);
+        DaphniaAcute daphniaAcute = daphniaAcuteService.getDescription(file, DaphniaAcute.class);
+        DaphniaChronic daphniaChronic = daphniaChronicService.getDescription(file, DaphniaChronic.class);
+        map.put("algalChronic", algalChronic);
+        map.put("fishChronic", fishChronic);
+        map.put("daphniaAcute", daphniaAcute);
+        map.put("daphniaChronic", daphniaChronic);
+        return map;
+        /*BufferedReader reader = new BufferedReader(new FileReader(file));
         // 读取描述符标题
         String title = reader.readLine();
         List<String> titleList = Arrays.asList(title.trim().split("\\s{2,}|\t"));//将多余空格或Tab键都转为一个空格
@@ -61,9 +80,10 @@ public class HelloWorld {
                 System.out.println("不存在"+str);
             }
         }
-        reader.close();
+        reader.close();*/
     }
-    private String creatMD5(String loginNum){
+
+    private String creatMD5(String loginNum) {
         // 生成一个MD5加密计算摘要
         MessageDigest md = null;
         try {
@@ -77,12 +97,12 @@ public class HelloWorld {
     }
 
     @RequestMapping("/result")
-    public Result getResult(){
+    public Result getResult() {
         User u = new User();
         u.setId("4");
         u.setUserid("aaa");
         u.setPwd("aaa");
-        return Result.build(200,"成功",u);
+        return Result.build(200, "成功", u);
     }
 
 }

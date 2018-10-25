@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * @author: SungLee
@@ -300,4 +300,64 @@ public abstract class BaseService<T> {
 
 
     //TODO 新化合物进入系统后的处理逻辑（在各自的Controller中写）
+
+    private static Map<String, String> map = new HashMap<>();
+
+    static {
+        // 藻慢性描述符
+        map.put("spmax6Bhm", "SpMax6_Bh(m)");
+        map.put("gats5i", "GATS5i");
+        map.put("mor15s", "Mor15s");
+        map.put("logkow", "logKow");
+        map.put("ats6m", "ATS6m");
+        // 溞急性描述符
+        map.put("ncrp", "nCrp");
+        map.put("f04ns", "F04[N-S]");
+        map.put("bo4oo", "B04[O-O]");
+        map.put("f08oo", "F08[O-O]");
+        map.put("eig08Aeabo", "Eig08_AEA(bo)");
+        map.put("b02ncl", "B02[N-Cl]");
+        // 溞慢性描述符
+        map.put("mlogp", "MLOGP");
+        map.put("spmaxEari", "SpMax_EA(ri)");
+        map.put("mor04s", "Mor04s");
+        map.put("sm02Aeadm", "SM02_AEA(dm)");
+        map.put("rdf075s", "RDF075s");
+        // 鱼慢性描述符
+        map.put("spmaxaEadm", "SpMaxA_EA(dm)");
+        map.put("mpc07", "MPC07");
+        map.put("cats2d05Ll", "CATS2D_05_LL");
+    }
+
+    public <T> T getDescription(File file, Class<T> clazz) throws IllegalAccessException, InstantiationException, IOException {
+        T t = clazz.newInstance();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        // 读取描述符标题
+        String title = reader.readLine();
+        List<String> titleList = Arrays.asList(title.trim().split("\\s{2,}|\t"));//将多余空格或Tab键都转为一个空格
+        // 读取描述符内容
+        String content = reader.readLine();
+        String[] contentAry = content.trim().split("\\s{2,}|\t");
+        reader.close();
+        // 获取对象属性
+        Field[] fields = clazz.getDeclaredFields();
+        // 获取需要的描述符
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (!map.keySet().contains(field.getName())) {// 不是描述符属性
+                continue;
+            }
+            if (!titleList.contains(map.get(field.getName()))) {// 文件中没有该描述符
+                logger.error(clazz + ":" + field.getName() + "对应的描述符值未找到！");
+            }
+            // 取描述符的值
+            String value = contentAry[titleList.indexOf(map.get(field.getName()))];
+            if ("NA".equalsIgnoreCase(value)) {
+                field.set(t, -1d);
+            } else {
+                field.set(t, Double.parseDouble(value));
+            }
+        }
+        return t;
+    }
 }
