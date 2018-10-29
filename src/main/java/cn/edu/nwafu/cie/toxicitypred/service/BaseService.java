@@ -301,7 +301,7 @@ public abstract class BaseService<T> {
 
     //TODO 新化合物进入系统后的处理逻辑（在各自的Controller中写）
 
-    private static Map<String, String> map = new HashMap<>();
+    private static Map<String, String> map = new HashMap<>();// 实体类中描述符与文件中描述符对应关系
 
     static {
         // 藻慢性描述符
@@ -329,7 +329,20 @@ public abstract class BaseService<T> {
         map.put("cats2d05Ll", "CATS2D_05_LL");
     }
 
-    public <T> T getDescription(File file, Class<T> clazz) throws IllegalAccessException, InstantiationException, IOException {
+    /**
+     * 从描述符文件中提取特定描述符
+     *
+     * @param file
+     * @param clazz
+     * @param <T>
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws IOException
+     * @throws NoSuchFieldException
+     * @auther Sung_Lee
+     */
+    public <T> T getDescription(File file, Class<T> clazz) throws IllegalAccessException, InstantiationException, IOException, NoSuchFieldException {
         T t = clazz.newInstance();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         // 读取描述符标题
@@ -349,6 +362,7 @@ public abstract class BaseService<T> {
             }
             if (!titleList.contains(map.get(field.getName()))) {// 文件中没有该描述符
                 logger.error(clazz + ":" + field.getName() + "对应的描述符值未找到！");
+                continue;
             }
             // 取描述符的值
             String value = contentAry[titleList.indexOf(map.get(field.getName()))];
@@ -358,6 +372,10 @@ public abstract class BaseService<T> {
                 field.set(t, Double.parseDouble(value));
             }
         }
+        // 设置casNo
+        Field casNoField = clazz.getDeclaredField("casNo");
+        casNoField.setAccessible(true);
+        casNoField.set(t, file.getName().split("\\.")[0]);
         return t;
     }
 }
