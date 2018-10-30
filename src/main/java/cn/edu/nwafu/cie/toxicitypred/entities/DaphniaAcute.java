@@ -7,7 +7,7 @@ public class DaphniaAcute {
 
     private String smiles;
 
-    private Double ncrp;
+    private Double ncrq;
 
     private Double f04ns;
 
@@ -51,12 +51,12 @@ public class DaphniaAcute {
         this.smiles = smiles == null ? null : smiles.trim();
     }
 
-    public Double getNcrp() {
-        return ncrp;
+    public Double getNcrq() {
+        return ncrq;
     }
 
-    public void setNcrp(Double ncrp) {
-        this.ncrp = ncrp;
+    public void setNcrq(Double ncrq) {
+        this.ncrq = ncrq;
     }
 
     public Double getF04ns() {

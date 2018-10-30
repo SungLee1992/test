@@ -5,7 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="cas_no" property="casNo" jdbcType="VARCHAR" />
     <result column="smiles" property="smiles" jdbcType="VARCHAR" />
-    <result column="nCrp" property="ncrp" jdbcType="DOUBLE" />
+    <result column="nCrq" property="ncrq" jdbcType="DOUBLE" />
     <result column="F04NS" property="f04ns" jdbcType="DOUBLE" />
     <result column="Bo4OO" property="bo4oo" jdbcType="DOUBLE" />
     <result column="F08OO" property="f08oo" jdbcType="DOUBLE" />
@@ -17,7 +17,7 @@
     <result column="datatype" property="datatype" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cas_no, smiles, nCrp, F04NS, Bo4OO, F08OO, Eig08_AEAbo, B02NCl, EC50_48h, exp_value, 
+    id, cas_no, smiles, nCrq, F04NS, Bo4OO, F08OO, Eig08_AEAbo, B02NCl, EC50_48h, exp_value,
     pre_value, datatype
   </sql>
   <select id="getByDataType" resultMap="BaseResultMap">
@@ -44,12 +44,12 @@
   </delete>
   <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute" >
     insert into daphnia_acute (id, cas_no, smiles, 
-      nCrp, F04NS, Bo4OO, F08OO, 
+      nCrq, F04NS, Bo4OO, F08OO,
       Eig08_AEAbo, B02NCl, EC50_48h, 
       exp_value, pre_value, datatype
       )
     values (#{id,jdbcType=INTEGER}, #{casNo,jdbcType=VARCHAR}, #{smiles,jdbcType=VARCHAR}, 
-      #{ncrp,jdbcType=DOUBLE}, #{f04ns,jdbcType=DOUBLE}, #{bo4oo,jdbcType=DOUBLE}, #{f08oo,jdbcType=DOUBLE}, 
+      #{ncrq,jdbcType=DOUBLE}, #{f04ns,jdbcType=DOUBLE}, #{bo4oo,jdbcType=DOUBLE}, #{f08oo,jdbcType=DOUBLE},
       #{eig08Aeabo,jdbcType=DOUBLE}, #{b02ncl,jdbcType=DOUBLE}, #{ec5048h,jdbcType=VARCHAR}, 
       #{expValue,jdbcType=VARCHAR}, #{preValue,jdbcType=VARCHAR}, #{datatype,jdbcType=VARCHAR}
       )
@@ -66,8 +66,8 @@
       <if test="smiles != null" >
         smiles,
       </if>
-      <if test="ncrp != null" >
-        nCrp,
+      <if test="ncrq != null" >
+        nCrq,
       </if>
       <if test="f04ns != null" >
         F04NS,
@@ -107,8 +107,8 @@
       <if test="smiles != null" >
         #{smiles,jdbcType=VARCHAR},
       </if>
-      <if test="ncrp != null" >
-        #{ncrp,jdbcType=DOUBLE},
+      <if test="ncrq != null" >
+        #{ncrq,jdbcType=DOUBLE},
       </if>
       <if test="f04ns != null" >
         #{f04ns,jdbcType=DOUBLE},
@@ -148,8 +148,8 @@
       <if test="smiles != null" >
         smiles = #{smiles,jdbcType=VARCHAR},
       </if>
-      <if test="ncrp != null" >
-        nCrp = #{ncrp,jdbcType=DOUBLE},
+      <if test="ncrq != null" >
+        nCrq = #{ncrq,jdbcType=DOUBLE},
       </if>
       <if test="f04ns != null" >
         F04NS = #{f04ns,jdbcType=DOUBLE},
@@ -185,7 +185,7 @@
     update daphnia_acute
     set cas_no = #{casNo,jdbcType=VARCHAR},
       smiles = #{smiles,jdbcType=VARCHAR},
-      nCrp = #{ncrp,jdbcType=DOUBLE},
+      nCrq = #{ncrq,jdbcType=DOUBLE},
       F04NS = #{f04ns,jdbcType=DOUBLE},
       Bo4OO = #{bo4oo,jdbcType=DOUBLE},
       F08OO = #{f08oo,jdbcType=DOUBLE},

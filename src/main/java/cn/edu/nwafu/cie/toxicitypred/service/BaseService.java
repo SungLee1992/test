@@ -308,10 +308,10 @@ public abstract class BaseService<T> {
         map.put("spmax6Bhm", "SpMax6_Bh(m)");
         map.put("gats5i", "GATS5i");
         map.put("mor15s", "Mor15s");
-        map.put("logkow", "logKow");
+        map.put("logkow", "MLOGP");
         map.put("ats6m", "ATS6m");
         // 溞急性描述符
-        map.put("ncrp", "nCrp");
+        map.put("ncrq", "nCrq");
         map.put("f04ns", "F04[N-S]");
         map.put("bo4oo", "B04[O-O]");
         map.put("f08oo", "F08[O-O]");
