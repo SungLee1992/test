@@ -2,8 +2,10 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -61,5 +63,13 @@ public class BaseServiceTest {
             FileUtil.moveFile(outFile, outFilePath);
         }
 
+    }
+
+    @Test
+    public void readVldDesFileTest(){
+        FishChronicService fishChronicService = new FishChronicService();
+        File file = new File(System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vlddes.csv");
+        Map<String,Object> map = (Map<String, Object>) fishChronicService.readVldDesFile(file);
+        System.out.println(map.size());
     }
 }

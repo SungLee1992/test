@@ -1,6 +1,7 @@
 package cn.edu.nwafu.cie.toxicitypred.controller;
 
 import cn.edu.nwafu.cie.toxicitypred.common.Result;
+import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.FishChronicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author: SungLee
@@ -102,6 +102,41 @@ public class FishChronicController {
         return Result.success(resultMap);
     }
 
+    /*************************************************** 将dragon生成的描述符提取出来，更新数据库中的记录 ****************************************************/
+    @RequestMapping("/fishchr/traindestodb")
+    public Result updateTrainDesToDB(){
+        int trainUpdateSize = fishChronicService.updateDescription(trainDragonOutFilesPath, FishChronic.class,"train");
+        if(trainUpdateSize==0){
+            return Result.errorMsg("鱼类慢性毒性训练集数据的描述符在更新数据库时出错！");
+        }
+        return Result.success(trainUpdateSize);
+    }
+
+    @RequestMapping("/fishchr/vlddestodb")
+    public Result updateVldDesToDB(){
+        int vldUpdateSize = fishChronicService.updateDescription(vldDragonOutFilesPath, FishChronic.class,"validate");
+        if(vldUpdateSize==0){
+            return Result.errorMsg("鱼类慢性毒性验证集数据的描述符在更新数据库时出错！");
+        }
+        return Result.success(vldUpdateSize);
+    }
+
+    @RequestMapping("/fishchr/destodb")
+    public Result updateDesToDB(){
+        int trainUpdateSize = fishChronicService.updateDescription(trainDragonOutFilesPath, FishChronic.class,"train");
+        if(trainUpdateSize==0){
+            return Result.errorMsg("鱼类慢性毒性训练集数据的描述符在更新数据库时出错！");
+        }
+        int vldUpdateSize = fishChronicService.updateDescription(vldDragonOutFilesPath, FishChronic.class,"validate");
+        if(vldUpdateSize==0){
+            return Result.errorMsg("鱼类慢性毒性验证集数据的描述符在更新数据库时出错！");
+        }
+        HashMap<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("trainUpdateSize", trainUpdateSize);
+        resultMap.put("vldUpdateSize", vldUpdateSize);
+        return Result.success(resultMap);
+    }
+
     /*************************************************** 读数据库生成描述符的csv件，用于knn ****************************************************/
     @RequestMapping("/fishchr/trainscsv")
     public Result getTrainsCSV(){
@@ -141,6 +176,7 @@ public class FishChronicController {
         resultMap.put("vldSize", vldSize);
         return Result.success(resultMap);
     }
+
     /*************************************************** 数据预处理已全部完成，训练集503，验证集127，只剩knn ****************************************************/
     @RequestMapping("/fishchr/vldknn")
     public Result vldKnnPre(){

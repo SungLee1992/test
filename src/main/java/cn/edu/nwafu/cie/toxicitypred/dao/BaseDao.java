@@ -42,9 +42,16 @@ public interface BaseDao<T> {
     /**
      * @param: []
      * @return: String
-     * 插入一条记录
+     * 更新一条记录
      */
     public int updateRecourd(T t);
+
+    /**
+     * @param: []
+     * @return: int
+     * 根据casNo更新一条记录
+     */
+    public int updateByCasNo(T t);
 
     /**
      * @param: [casNo]

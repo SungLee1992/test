@@ -136,12 +136,9 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic">
+    <update id="updateByCasNo" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic">
         update algal_chronic
         <set>
-            <if test="casNo != null">
-                cas_no = #{casNo,jdbcType=VARCHAR},
-            </if>
             <if test="smiles != null">
                 smiles = #{smiles,jdbcType=VARCHAR},
             </if>
@@ -169,11 +166,8 @@
             <if test="preValue != null">
                 pre_value = #{preValue,jdbcType=VARCHAR},
             </if>
-            <if test="datatype != null">
-                datatype = #{datatype,jdbcType=VARCHAR},
-            </if>
         </set>
-        where id = #{id,jdbcType=INTEGER}
+        where casNo = #{casNo} and datatype = #{datatype}
     </update>
     <update id="updateRecourd" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic">
     update algal_chronic

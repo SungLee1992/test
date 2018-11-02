@@ -39,6 +39,10 @@ public abstract class BaseService<T> {
         return baseDao.updateRecourd(t);
     }
 
+    public int updateByCasNo(T t) {
+        return baseDao.updateByCasNo(t);
+    }
+
     public int delete(T t) {
         return baseDao.deleteRecord(t);
     }
@@ -250,7 +254,7 @@ public abstract class BaseService<T> {
      * @return 返回数据集
      * 从数据文件中读取数据
      */
-    public List<List<Double>> read(File dataFile) {
+    public List<List<Double>> readTrainDesFile(File dataFile) {
         List<List<Double>> datas = new ArrayList<List<Double>>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(dataFile));
@@ -273,27 +277,69 @@ public abstract class BaseService<T> {
     }
 
     /**
+     * @param dataFile 数据文件
+     * @return 返回数据集
+     * 从数据文件中读取数据
+     */
+    public Map<String, Object> readVldDesFile(File dataFile) {
+        HashMap<String, Object> dataMap = new HashMap<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(dataFile));
+            String data = br.readLine();
+            List<Double> desList = null;
+            while (data != null) {
+                String description[] = data.split(",");
+                desList = new ArrayList<Double>();
+                //从第1列开始（第0列为casNo）
+                for (int i = 1; i < description.length; i++) {
+                    desList.add(Double.parseDouble(description[i]));
+                }
+                dataMap.put(description[0], desList);
+                data = br.readLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataMap;
+    }
+
+    /**
      * @param: []
      * @return: void
      */
-    public void runKnn(File trainFile, File vldFile) {
-        List<List<Double>> trainDatas = this.read(trainFile);
-        List<List<Double>> vldDatas = this.read(vldFile);
+    public Map<String, String> runKnn(File trainFile, File vldFile) {
+        List<List<Double>> trainDatas = this.readTrainDesFile(trainFile);
+        Map<String, Object> vldDatasMap = this.readVldDesFile(vldFile);
+        Map<String, String> result = new HashMap<>();
         KNN knn = new KNN();
-        int preValue = -1;
+        for (Map.Entry<String, Object> entry : vldDatasMap.entrySet()) {
+            Integer preValue = -1;
+            List<Double> vldData = (List<Double>) entry.getValue();
+            preValue = Math.round(Float.parseFloat((knn.knn(trainDatas, vldData, 3)))); //这里规定K取值
+            result.put(entry.getKey(), String.valueOf(preValue));
+            //********* 在生产环境中，以下可以不执行**********//*
+            System.out.print("测试元组: " + entry.getKey());
+            System.out.print("类别为: ");
+            System.out.println(preValue);
+            //********** 在生产环境中，以上可以不执行**********//*
+        }
+        System.out.println(result.size());
+        return result;
+        /*
         for (int i = 0; i < vldDatas.size(); i++) {
             List<Double> vldData = vldDatas.get(i);
             preValue = Math.round(Float.parseFloat((knn.knn(trainDatas, vldData, 3)))); //这里规定K取值
 
-            /********* 在生产环境中，以下可以不执行**********/
+            //********* 在生产环境中，以下可以不执行**********//*
             System.out.print("测试元组: ");
             for (int j = 0; j < vldData.size(); j++) {
                 System.out.print(vldData.get(j) + " ");
             }
             System.out.print("类别为: ");
             System.out.println(preValue);
-            /********* 在生产环境中，以上可以不执行**********/
+            //********** 在生产环境中，以上可以不执行**********//*
         }
+        */
     }
 
     //TODO 描述符写入文件中供knn用，文件存放在各自的dragonoutfiles目录下（在各自的Service中写）
@@ -378,4 +424,37 @@ public abstract class BaseService<T> {
         casNoField.set(t, file.getName().split("\\.")[0]);
         return t;
     }
+
+
+    /**
+     * @param desDir
+     * @param clazz
+     * @return: int
+     * @description: 读取dragon生成的描述符txt文件，取得对应描述符，更新数据库
+     */
+    public int updateDescription(String desDir, Class<T> clazz, String dataType) {
+        if (!FileUtil.validateDir(desDir)) {
+            logger.warn(desDir + "***********描述符文件保存的目标目录不合法！");
+            return 0;
+        }
+        int numOfUpdateDes = 0;
+        try {
+            T t = clazz.newInstance();
+            File files[] = new File(desDir).listFiles();
+            for (File desFile : files) {
+                //得到描述符至实体中
+                t = getDescription(desFile, clazz);
+                // 设置dataType
+                Field dataTypeField = clazz.getDeclaredField("datatype");
+                dataTypeField.setAccessible(true);
+                dataTypeField.set(t, dataType);
+                //更新
+                numOfUpdateDes = numOfUpdateDes + this.updateByCasNo(t);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return numOfUpdateDes;
+    }
+
 }

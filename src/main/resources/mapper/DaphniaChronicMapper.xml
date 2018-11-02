@@ -171,6 +171,39 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="updateByCasNo" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronic" >
+    update daphnia_chronic
+    <set >
+      <if test="smiles != null" >
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="mlogp != null" >
+        MLOGP = #{mlogp,jdbcType=DOUBLE},
+      </if>
+      <if test="spmaxEari != null" >
+        SpMax_EAri = #{spmaxEari,jdbcType=DOUBLE},
+      </if>
+      <if test="mor04s != null" >
+        Mor04s = #{mor04s,jdbcType=DOUBLE},
+      </if>
+      <if test="sm02Aeadm != null" >
+        SM02_AEAdm = #{sm02Aeadm,jdbcType=DOUBLE},
+      </if>
+      <if test="rdf075s != null" >
+        RDF075s = #{rdf075s,jdbcType=DOUBLE},
+      </if>
+      <if test="noec21d != null" >
+        NOEC_21d = #{noec21d,jdbcType=VARCHAR},
+      </if>
+      <if test="expValue != null" >
+        exp_value = #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        pre_value = #{preValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where cas_no = #{casNo} and datatype = #{datatype}
+  </update>
   <update id="updateByPrimaryKey" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronic" >
     update daphnia_chronic
     set cas_no = #{casNo,jdbcType=VARCHAR},
