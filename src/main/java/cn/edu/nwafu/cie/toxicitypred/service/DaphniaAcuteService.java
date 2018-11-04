@@ -2,6 +2,7 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 
 import cn.edu.nwafu.cie.toxicitypred.dao.DaphniaAcuteDao;
 import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute;
+import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,5 +44,21 @@ public class DaphniaAcuteService extends BaseService<DaphniaAcute> {
             }
         }
         return numOfdaphniaAcutes;
+    }
+
+    @Override
+    public String creatDescription(Object object, String dataType) {
+        StringBuilder sb = new StringBuilder();
+        DaphniaAcute daphniaAcute = (DaphniaAcute) object;
+        sb.append(daphniaAcute.getCasNo() + ",");
+        sb.append(daphniaAcute.getNcrq() + ",");
+        sb.append(daphniaAcute.getF04ns() + ",");
+        sb.append(daphniaAcute.getBo4oo() + ",");
+        sb.append(daphniaAcute.getF08oo() + ",");
+        sb.append(daphniaAcute.getEig08Aeabo() + ",");
+        sb.append(daphniaAcute.getB02ncl());
+        sb.append("train".equals(dataType) ? "," + daphniaAcute.getExpValue() : "");
+        sb.append("\n");
+        return sb.toString();
     }
 }

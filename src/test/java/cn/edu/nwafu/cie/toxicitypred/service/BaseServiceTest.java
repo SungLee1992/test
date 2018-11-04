@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -71,5 +74,15 @@ public class BaseServiceTest {
         File file = new File(System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vlddes.csv");
         Map<String,Object> map = (Map<String, Object>) fishChronicService.readVldDesFile(file);
         System.out.println(map.size());
+    }
+
+    @Test
+    public void readExcel(){
+        try {
+            List<ArrayList<String>> daphniaChronicExcels = FileUtil.poiReadXExcel("C:\\Users\\Administrator\\Desktop\\daphnia_chronic-cheichei-20181103.xlsx");
+            List<ArrayList<String>> algalChronicExcels = FileUtil.poiReadXExcel("C:\\Users\\Administrator\\Desktop\\algal_chronic-cheichei-20181103.xlsx");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

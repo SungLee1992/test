@@ -2,6 +2,7 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 
 import cn.edu.nwafu.cie.toxicitypred.dao.AlgalChronicDao;
 import cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic;
+import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronic;
 import cn.edu.nwafu.cie.toxicitypred.utils.ExcuteCommandUtil;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
 import org.slf4j.Logger;
@@ -55,5 +56,19 @@ public class AlgalChronicService extends BaseService<AlgalChronic> {
         }
         return outFilesToSmiFiles(outPath, smiPath);
     }*/
+    @Override
+    public String creatDescription(Object object, String dataType) {
+        StringBuilder sb = new StringBuilder();
+        AlgalChronic algalChronic = (AlgalChronic) object;
+        sb.append(algalChronic.getCasNo() + ",");
+        sb.append(algalChronic.getSpmax6Bhm() + ",");
+        sb.append(algalChronic.getGats5i() + ",");
+        sb.append(algalChronic.getMor15s() + ",");
+        sb.append(algalChronic.getLogkow() + ",");
+        sb.append(algalChronic.getAts6m() + ",");
+        sb.append("train".equals(dataType) ? "," + algalChronic.getExpValue() : "");
+        sb.append("\n");
+        return sb.toString();
+    }
 
 }

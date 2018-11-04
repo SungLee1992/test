@@ -3,6 +3,7 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 import cn.edu.nwafu.cie.toxicitypred.dao.FishChronicDao;
 import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
+import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,28 +55,32 @@ public class FishChronicService extends BaseService<FishChronic> {
     public int getDesFile(File desFile, String dataType) {
         ArrayList<FishChronic> fishChronicList = (ArrayList<FishChronic>) fishChronicDao.getByDataType(dataType);
         int numOfDesRecords = 0;
-        String content;
-        switch (dataType) {
-            case "train":
-                for (FishChronic fishChronic : fishChronicList) {
-                    //构造描述符+实验值
-                    content = fishChronic.getCasNo() + "," + fishChronic.getSpmaxaEadm() + "," + fishChronic.getMpc07() + "," + fishChronic.getCats2d05Ll() + "," + fishChronic.getExpValue() + "\n";
-                    if (super.writeFile(desFile, content, true)) {
-                        numOfDesRecords++;
-                    }
-                }
-                break;
-            case "validate":
-                for (FishChronic fishChronic : fishChronicList) {
-                    //构造描述符
-                    content = fishChronic.getCasNo() + "," + fishChronic.getSpmaxaEadm() + "," + fishChronic.getMpc07() + "," + fishChronic.getCats2d05Ll() + "\n";
-                    if (super.writeFile(desFile, content, true)) {
-                        numOfDesRecords++;
-                    }
-                }
-                break;
+        StringBuilder sb = new StringBuilder();
+        for (FishChronic fishChronic : fishChronicList) {//构造描述符+实验值
+            sb.append(fishChronic.getCasNo() + ",");
+            sb.append(fishChronic.getSpmaxaEadm() + ",");
+            sb.append(fishChronic.getMpc07() + ",");
+            sb.append(fishChronic.getCats2d05Ll());
+            sb.append("train".equals(dataType) ? "," + fishChronic.getExpValue() : "");
+            sb.append("\n");
+            if (super.writeFile(desFile, sb.toString(), true)) {
+                numOfDesRecords++;
+            }
         }
         return numOfDesRecords;
+    }
+
+    @Override
+    public String creatDescription(Object object, String dataType) {
+        StringBuilder sb = new StringBuilder();
+        FishChronic fishChronic = (FishChronic) object;
+        sb.append(fishChronic.getCasNo() + ",");
+        sb.append(fishChronic.getSpmaxaEadm() + ",");
+        sb.append(fishChronic.getMpc07() + ",");
+        sb.append(fishChronic.getCats2d05Ll());
+        sb.append("train".equals(dataType) ? "," + fishChronic.getExpValue() : "");
+        sb.append("\n");
+        return sb.toString();
     }
 
 }

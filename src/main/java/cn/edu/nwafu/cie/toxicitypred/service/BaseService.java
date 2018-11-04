@@ -2,9 +2,11 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 
 import cn.edu.nwafu.cie.toxicitypred.dao.BaseDao;
 import cn.edu.nwafu.cie.toxicitypred.common.CommandConstant;
+import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.knn.KNN;
 import cn.edu.nwafu.cie.toxicitypred.utils.ExcuteCommandUtil;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
+import org.apache.el.parser.BooleanNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,8 +249,6 @@ public abstract class BaseService<T> {
     }
 
     /***********************************  knn相关的操作  ***********************************/
-    //TODO knn操作读文件
-
     /**
      * @param dataFile 数据文件
      * @return 返回数据集
@@ -325,21 +325,6 @@ public abstract class BaseService<T> {
         }
         System.out.println(result.size());
         return result;
-        /*
-        for (int i = 0; i < vldDatas.size(); i++) {
-            List<Double> vldData = vldDatas.get(i);
-            preValue = Math.round(Float.parseFloat((knn.knn(trainDatas, vldData, 3)))); //这里规定K取值
-
-            //********* 在生产环境中，以下可以不执行**********//*
-            System.out.print("测试元组: ");
-            for (int j = 0; j < vldData.size(); j++) {
-                System.out.print(vldData.get(j) + " ");
-            }
-            System.out.print("类别为: ");
-            System.out.println(preValue);
-            //********** 在生产环境中，以上可以不执行**********//*
-        }
-        */
     }
 
     //TODO 描述符写入文件中供knn用，文件存放在各自的dragonoutfiles目录下（在各自的Service中写）
@@ -430,31 +415,65 @@ public abstract class BaseService<T> {
      * @param desDir
      * @param clazz
      * @return: int
-     * @description: 读取dragon生成的描述符txt文件，取得对应描述符，更新数据库
+     * @description: 读取描述符txt目录，批量更新
      */
-    public int updateDescription(String desDir, Class<T> clazz, String dataType) {
+    public int updateDescriptions(String desDir, Class<T> clazz, String dataType) {
         if (!FileUtil.validateDir(desDir)) {
             logger.warn(desDir + "***********描述符文件保存的目标目录不合法！");
             return 0;
         }
         int numOfUpdateDes = 0;
-        try {
-            T t = clazz.newInstance();
-            File files[] = new File(desDir).listFiles();
-            for (File desFile : files) {
-                //得到描述符至实体中
-                t = getDescription(desFile, clazz);
-                // 设置dataType
-                Field dataTypeField = clazz.getDeclaredField("datatype");
-                dataTypeField.setAccessible(true);
-                dataTypeField.set(t, dataType);
-                //更新
-                numOfUpdateDes = numOfUpdateDes + this.updateByCasNo(t);
+        File files[] = new File(desDir).listFiles();
+        //批量更新
+        for (File desFile : files) {
+            if (updateDescription(desFile, clazz, dataType)) {
+                numOfUpdateDes++;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return numOfUpdateDes;
     }
+
+    /**
+     * @param desFile
+     * @param clazz
+     * @param dataType
+     * @return: boolean
+     * @description: 读取单个dragon生成的描述符txt文件，取得对应描述符，更新数据库
+     */
+    public boolean updateDescription(File desFile, Class<T> clazz, String dataType) {
+        try {
+            T t;
+            //得到描述符至实体中
+            t = getDescription(desFile, clazz);
+            // 设置dataType
+            Field dataTypeField = clazz.getDeclaredField("datatype");
+            dataTypeField.setAccessible(true);
+            dataTypeField.set(t, dataType);
+            //更新
+            return this.updateByCasNo(t) == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * @param desFile
+     * @param dataType
+     * @return: int
+     * @description: 从数据库中读取knn所需的描述符，写入到文件中
+     */
+    public int getDesFile(File desFile, String dataType) {
+        List<T> list = baseDao.getByDataType(dataType);
+        int numOfDesRecords = 0;
+        for (T t : list) {// 构造描述符+实验值
+            if (writeFile(desFile, creatDescription(t, dataType), true)) {
+                numOfDesRecords++;
+            }
+        }
+        return numOfDesRecords;
+    }
+
+    public abstract String creatDescription(Object t, String dataType);
 
 }
