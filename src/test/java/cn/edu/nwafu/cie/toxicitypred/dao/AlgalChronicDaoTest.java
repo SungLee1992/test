@@ -3,6 +3,7 @@ package cn.edu.nwafu.cie.toxicitypred.dao;
 import cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic;
 import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.AlgalChronicService;
+import cn.edu.nwafu.cie.toxicitypred.service.BaseService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class AlgalChronicDaoTest {
     private AlgalChronicDao algalChronicDao;
     @Autowired
     private DaphniaChronicDao daphniaChronicDao;
+    @Autowired
+    private AlgalChronicService algalChronicService;
 
     @Test
     public void getAll() {
@@ -90,5 +93,10 @@ public class AlgalChronicDaoTest {
             }
         });
         System.out.println();
+    }
+
+    @Test
+    public void updatePreValueByCasNo(){
+        algalChronicService.updatePreValueByCasNo("000067-48-1","0","train");
     }
 }
