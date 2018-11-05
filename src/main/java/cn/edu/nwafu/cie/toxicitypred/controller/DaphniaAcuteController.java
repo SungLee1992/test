@@ -106,7 +106,7 @@ public class DaphniaAcuteController {
     /*************************************************** 将dragon生成的描述符提取出来，更新数据库中的记录 ****************************************************/
     @RequestMapping("/dapact/traindestodb")
     public Result updateTrainDesToDB(){
-        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath, DaphniaAcute.class,"train");
+        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("溞类急性毒性训练集数据的描述符在更新数据库时出错！");
         }
@@ -115,7 +115,7 @@ public class DaphniaAcuteController {
 
     @RequestMapping("/dapact/vlddestodb")
     public Result updateVldDesToDB(){
-        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath, DaphniaAcute.class,"validate");
+        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("溞类急性毒性验证集数据的描述符在更新数据库时出错！");
         }
@@ -124,11 +124,11 @@ public class DaphniaAcuteController {
 
     @RequestMapping("/dapact/destodb")
     public Result updateDesToDB(){
-        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath, DaphniaAcute.class,"train");
+        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("溞类急性毒性训练集数据的描述符在更新数据库时出错！");
         }
-        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath, DaphniaAcute.class,"validate");
+        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("溞类急性毒性验证集数据的描述符在更新数据库时出错！");
         }

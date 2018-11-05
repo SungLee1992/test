@@ -2,11 +2,9 @@ package cn.edu.nwafu.cie.toxicitypred.service;
 
 import cn.edu.nwafu.cie.toxicitypred.dao.BaseDao;
 import cn.edu.nwafu.cie.toxicitypred.common.CommandConstant;
-import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.knn.KNN;
 import cn.edu.nwafu.cie.toxicitypred.utils.ExcuteCommandUtil;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
-import org.apache.el.parser.BooleanNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,8 @@ import java.util.*;
  */
 public abstract class BaseService<T> {
     private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
+
+    private T t;
     @Autowired
     protected BaseDao<T> baseDao;
 
@@ -47,6 +47,10 @@ public abstract class BaseService<T> {
 
     public int delete(T t) {
         return baseDao.deleteRecord(t);
+    }
+
+    public int updatePreValueByCasNo(String casNo, String preValue){
+        return baseDao.updatePreValueByCasNo(casNo, preValue);
     }
 
     public String getCasNo(File toxicityFile) {
@@ -364,8 +368,6 @@ public abstract class BaseService<T> {
      * 从描述符文件中提取特定描述符
      *
      * @param file
-     * @param clazz
-     * @param <T>
      * @return
      * @throws IllegalAccessException
      * @throws InstantiationException
@@ -373,8 +375,46 @@ public abstract class BaseService<T> {
      * @throws NoSuchFieldException
      * @auther Sung_Lee
      */
-    public <T> T getDescription(File file, Class<T> clazz) throws IllegalAccessException, InstantiationException, IOException, NoSuchFieldException {
+    /*public <T> T getDescription(File file, Class<T> clazz) throws IllegalAccessException, InstantiationException, IOException, NoSuchFieldException {
         T t = clazz.newInstance();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        // 读取描述符标题
+        String title = reader.readLine();
+        List<String> titleList = Arrays.asList(title.trim().split("\\s{2,}|\t"));//将多余空格或Tab键都转为一个空格
+        // 读取描述符内容
+        String content = reader.readLine();
+        String[] contentAry = content.trim().split("\\s{2,}|\t");
+        reader.close();
+        // 获取对象属性
+        Field[] fields = clazz.getDeclaredFields();
+        // 获取需要的描述符
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (!map.keySet().contains(field.getName())) {// 不是描述符属性
+                continue;
+            }
+            if (!titleList.contains(map.get(field.getName()))) {// 文件中没有该描述符
+                logger.error(clazz + ":" + field.getName() + "对应的描述符值未找到！");
+                continue;
+            }
+            // 取描述符的值
+            String value = contentAry[titleList.indexOf(map.get(field.getName()))];
+            if ("NA".equalsIgnoreCase(value)) {
+                field.set(t, -1d);
+            } else {
+                field.set(t, Double.parseDouble(value));
+            }
+        }
+        // 设置casNo
+        Field casNoField = clazz.getDeclaredField("casNo");
+        casNoField.setAccessible(true);
+        casNoField.set(t, file.getName().split("\\.")[0]);
+        return t;
+    }*/
+
+    public T getDescription(File file) throws IllegalAccessException, InstantiationException, IOException, NoSuchFieldException {
+        Class clazz = t.getClass();
+        t = (T) clazz.newInstance();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         // 读取描述符标题
         String title = reader.readLine();
@@ -413,11 +453,10 @@ public abstract class BaseService<T> {
 
     /**
      * @param desDir
-     * @param clazz
      * @return: int
      * @description: 读取描述符txt目录，批量更新
      */
-    public int updateDescriptions(String desDir, Class<T> clazz, String dataType) {
+    public int updateDescriptions(String desDir, String dataType) {
         if (!FileUtil.validateDir(desDir)) {
             logger.warn(desDir + "***********描述符文件保存的目标目录不合法！");
             return 0;
@@ -426,7 +465,7 @@ public abstract class BaseService<T> {
         File files[] = new File(desDir).listFiles();
         //批量更新
         for (File desFile : files) {
-            if (updateDescription(desFile, clazz, dataType)) {
+            if (updateDescription(desFile, dataType)) {
                 numOfUpdateDes++;
             }
         }
@@ -435,17 +474,16 @@ public abstract class BaseService<T> {
 
     /**
      * @param desFile
-     * @param clazz
      * @param dataType
      * @return: boolean
      * @description: 读取单个dragon生成的描述符txt文件，取得对应描述符，更新数据库
      */
-    public boolean updateDescription(File desFile, Class<T> clazz, String dataType) {
+    public boolean updateDescription(File desFile, String dataType) {
         try {
-            T t;
             //得到描述符至实体中
-            t = getDescription(desFile, clazz);
+            t = getDescription(desFile);
             // 设置dataType
+            Class clazz = t.getClass();
             Field dataTypeField = clazz.getDeclaredField("datatype");
             dataTypeField.setAccessible(true);
             dataTypeField.set(t, dataType);

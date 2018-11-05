@@ -184,4 +184,9 @@
       datatype = #{datatype,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="updatePreValueByCasNo">
+    update algal_chronic
+    set pre_value = #{preValue,jdbcType=VARCHAR},
+    where cas_no = #{casNo,jdbcType=VARCHAR}
+  </update>
 </mapper>

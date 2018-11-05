@@ -106,7 +106,7 @@ public class FishChronicController {
     /*************************************************** 将dragon生成的描述符提取出来，更新数据库中的记录 ****************************************************/
     @RequestMapping("/fishchr/traindestodb")
     public Result updateTrainDesToDB(){
-        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath, FishChronic.class,"train");
+        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("鱼类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
@@ -115,7 +115,7 @@ public class FishChronicController {
 
     @RequestMapping("/fishchr/vlddestodb")
     public Result updateVldDesToDB(){
-        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath, FishChronic.class,"validate");
+        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("鱼类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }
@@ -124,11 +124,11 @@ public class FishChronicController {
 
     @RequestMapping("/fishchr/destodb")
     public Result updateDesToDB(){
-        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath, FishChronic.class,"train");
+        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("鱼类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
-        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath, FishChronic.class,"validate");
+        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("鱼类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }
