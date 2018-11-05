@@ -63,10 +63,10 @@ public interface BaseDao<T> {
     /**
      * 根据dataType获取所有训练集or验证集
      */
-    public  List<T> getByDataType(String dataType);
+    public List<T> getByDataType(String dataType);
 
     /**
      * 根据casNo更新预测值
      */
-    public int updatePreValueByCasNo(@Param("casNo")String casNo, @Param("preValue")String preValue);
+    public int updatePreValueByCasNo(@Param("casNo") String casNo, @Param("preValue") String preValue, @Param("dataType") String dataType);
 }

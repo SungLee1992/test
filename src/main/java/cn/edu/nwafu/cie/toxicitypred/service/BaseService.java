@@ -49,8 +49,8 @@ public abstract class BaseService<T> {
         return baseDao.deleteRecord(t);
     }
 
-    public int updatePreValueByCasNo(String casNo, String preValue){
-        return baseDao.updatePreValueByCasNo(casNo, preValue);
+    public int updatePreValueByCasNo(String casNo, String preValue, String dataType){
+        return baseDao.updatePreValueByCasNo(casNo, preValue, dataType);
     }
 
     public String getCasNo(File toxicityFile) {
