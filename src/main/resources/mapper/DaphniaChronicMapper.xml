@@ -219,4 +219,9 @@
       datatype = #{datatype,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="updatePreValueByCasNo" parameterType="string">
+    update daphnia_chronic
+    set pre_value = #{preValue,jdbcType=VARCHAR}
+    where cas_no = #{casNo,jdbcType=VARCHAR} and datatype = #{dataType,jdbcType=VARCHAR}
+  </update>
 </mapper>
