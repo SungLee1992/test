@@ -187,6 +187,6 @@
   <update id="updatePreValueByCasNo">
     update algal_chronic
     set pre_value = #{preValue,jdbcType=VARCHAR},
-    where cas_no = #{casNo,jdbcType=VARCHAR}
+    where cas_no = #{casNo,jdbcType=VARCHAR} and  dataType = #{datatype}
   </update>
 </mapper>

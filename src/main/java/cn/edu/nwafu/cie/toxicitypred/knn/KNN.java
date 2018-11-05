@@ -59,7 +59,7 @@ public class KNN {
      * @return 测试元组的类别
      */
     public String knn(List<List<Double>> trainDatas, List<Double> vldData, int k) {
-        PriorityQueue<KNNNode> pq = new PriorityQueue<KNNNode>(k, comparator);
+        PriorityQueue<KNNNode> pq = new PriorityQueue<>(k, comparator);
         List<Integer> randNum = getRandKNum(k, trainDatas.size());
         for (int i = 0; i < k; i++) {
             int index = randNum.get(i);

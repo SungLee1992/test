@@ -47,12 +47,12 @@ public class FishChronicService extends BaseService<FishChronic> {
     }
 
     /**
-     * @param desFile
+     * //@param desFile
      * @param dataType
      * @return: int
      * @description: 从数据库中读取knn所需的描述符，写入到文件中
      */
-    public int getDesFile(File desFile, String dataType) {
+    /*public int getDesFile(File desFile, String dataType) {
         ArrayList<FishChronic> fishChronicList = (ArrayList<FishChronic>) fishChronicDao.getByDataType(dataType);
         int numOfDesRecords = 0;
         StringBuilder sb = new StringBuilder();
@@ -68,7 +68,7 @@ public class FishChronicService extends BaseService<FishChronic> {
             }
         }
         return numOfDesRecords;
-    }
+    }*/
 
     @Override
     public String creatDescription(Object object, String dataType) {

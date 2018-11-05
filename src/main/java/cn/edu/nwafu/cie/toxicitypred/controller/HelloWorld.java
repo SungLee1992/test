@@ -56,10 +56,10 @@ public class HelloWorld {
         String[] text = new String[]{"NAME", "Se", "MW"};
         File file = new File("D:\\000050-06-6.txt");
         Map<String, Object> map = new HashMap<>();
-        AlgalChronic algalChronic = algalChronicService.getDescription(file, AlgalChronic.class);   //logkow描述符不存在！！！
-        FishChronic fishChronic = fishChronicService.getDescription(file, FishChronic.class);
-        DaphniaAcute daphniaAcute = daphniaAcuteService.getDescription(file, DaphniaAcute.class);
-        DaphniaChronic daphniaChronic = daphniaChronicService.getDescription(file, DaphniaChronic.class);
+        AlgalChronic algalChronic = algalChronicService.getDescription(file);   //logkow描述符不存在！！！
+        FishChronic fishChronic = fishChronicService.getDescription(file);
+        DaphniaAcute daphniaAcute = daphniaAcuteService.getDescription(file);
+        DaphniaChronic daphniaChronic = daphniaChronicService.getDescription(file);
         map.put("algalChronic", algalChronic);
         map.put("fishChronic", fishChronic);
         map.put("daphniaAcute", daphniaAcute);

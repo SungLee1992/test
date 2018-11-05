@@ -31,8 +31,10 @@ public class FishChronicController {
     private static String trainDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/trainfiles"; //smi文件路径（训练集）
     private static String vldDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vldfiles";  //smi文件路径（验证集）
 
+    //用于knn的csv文件
     private static String trainDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/traindes.csv";
     private static String vldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vlddes.csv";
+    private static String trainAsVldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/trainasvlddes.csv";
     /*************************************************** smiles->smi文件 ****************************************************/
     @RequestMapping("/fishchr/smitrains")
     public Result getTrainSmiFile(){
@@ -175,6 +177,19 @@ public class FishChronicController {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("trainSize", trainSize);
         resultMap.put("vldSize", vldSize);
+        return Result.success(resultMap);
+    }
+
+    @RequestMapping("/fishchr/trainasvldcsv")
+    public Result getTrainAsVldCSV() {
+        File trainDesFile = new File(trainAsVldDesFilePath);
+        int trainSize = fishChronicService.getDesFile(trainDesFile, "train");
+        if (trainSize == 0) {
+            return Result.errorMsg("鱼类慢性毒性训练集数据在转为csv文件时出错！");
+        }
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+        resultMap.put("trainSize", trainSize);
         return Result.success(resultMap);
     }
 

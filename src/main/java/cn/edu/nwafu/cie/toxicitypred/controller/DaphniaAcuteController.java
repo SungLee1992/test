@@ -1,7 +1,6 @@
 package cn.edu.nwafu.cie.toxicitypred.controller;
 
 import cn.edu.nwafu.cie.toxicitypred.common.Result;
-import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute;
 import cn.edu.nwafu.cie.toxicitypred.service.DaphniaAcuteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +31,7 @@ public class DaphniaAcuteController {
 
     private static String trainDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/traindes.csv";
     private static String vldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/vlddes.csv";
+    private static String trainAsVldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/trainasvlddes.csv";
 
     /*************************************************** smiles->smi文件 ****************************************************/
     @RequestMapping("/dapact/smitrains")
@@ -155,6 +155,19 @@ public class DaphniaAcuteController {
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("trainSize", trainSize);
         resultMap.put("vldSize", vldSize);
+        return Result.success(resultMap);
+    }
+
+    @RequestMapping("/dapact/trainasvldcsv")
+    public Result getTrainAsVldCSV() {
+        File trainDesFile = new File(trainAsVldDesFilePath);
+        int trainSize = daphniaAcuteService.getDesFile(trainDesFile, "train");
+        if (trainSize == 0) {
+            return Result.errorMsg("溞类急性毒性训练集数据在转为csv文件时出错！");
+        }
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+        resultMap.put("trainSize", trainSize);
         return Result.success(resultMap);
     }
 }
