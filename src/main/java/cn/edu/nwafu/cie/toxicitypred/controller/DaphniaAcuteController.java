@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author: SungLee
@@ -169,5 +170,30 @@ public class DaphniaAcuteController {
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("trainSize", trainSize);
         return Result.success(resultMap);
+    }
+
+    @RequestMapping("/dapact/vldknn")
+    public Result vldKnnPre(){
+        File trainDesFile = new File(trainDesFilePath);
+        File vldDesFile = new File(vldDesFilePath);
+        Map<String, String> knnMap = daphniaAcuteService.runKnn(trainDesFile,vldDesFile);
+        int numOfUpdatePreValues = 0;
+        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+            numOfUpdatePreValues += daphniaAcuteService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"validate");
+        }
+        return Result.success(numOfUpdatePreValues);
+    }
+
+    @RequestMapping("/dapact/trainknn")
+    public Result trainKnnPre(){
+        File trainDesFile = new File(trainDesFilePath);
+        File trainAsVldDesFile = new File(trainAsVldDesFilePath);
+
+        Map<String, String> knnMap = daphniaAcuteService.runKnn(trainDesFile,trainAsVldDesFile);
+        int numOfUpdatePreValues = 0;
+        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+            numOfUpdatePreValues += daphniaAcuteService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"train");
+        }
+        return Result.success(numOfUpdatePreValues);
     }
 }

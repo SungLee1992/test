@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -198,7 +199,24 @@ public class FishChronicController {
     public Result vldKnnPre(){
         File trainDesFile = new File(trainDesFilePath);
         File vldDesFile = new File(vldDesFilePath);
-        fishChronicService.runKnn(trainDesFile,vldDesFile);
-        return Result.successWithoutData();
+        Map<String, String> knnMap = fishChronicService.runKnn(trainDesFile,vldDesFile);
+        int numOfUpdatePreValues = 0;
+        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+            numOfUpdatePreValues += fishChronicService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"validate");
+        }
+        return Result.success(numOfUpdatePreValues);
+    }
+
+    @RequestMapping("/fishchr/trainknn")
+    public Result trainKnnPre(){
+        File trainDesFile = new File(trainDesFilePath);
+        File trainAsVldDesFile = new File(trainAsVldDesFilePath);
+
+        Map<String, String> knnMap = fishChronicService.runKnn(trainDesFile,trainAsVldDesFile);
+        int numOfUpdatePreValues = 0;
+        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+            numOfUpdatePreValues += fishChronicService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"train");
+        }
+        return Result.success(numOfUpdatePreValues);
     }
 }
