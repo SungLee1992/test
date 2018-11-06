@@ -201,9 +201,9 @@ public class FishChronicController {
         File vldDesFile = new File(vldDesFilePath);
         Map<String, String> knnMap = fishChronicService.runKnn(trainDesFile,vldDesFile);
         int numOfUpdatePreValues = 0;
-        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+       /* for (Map.Entry<String, String> entry : knnMap.entrySet()) {
             numOfUpdatePreValues += fishChronicService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"validate");
-        }
+        }*/
         return Result.success(numOfUpdatePreValues);
     }
 

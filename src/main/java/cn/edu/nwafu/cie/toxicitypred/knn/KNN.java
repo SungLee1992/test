@@ -9,15 +9,16 @@ import java.util.*;
  */
 public class KNN {
     /**
-     * 设置优先级队列的比较函数，距离越大，优先级越高
+     * 设置优先级队列的比较函数，距离越小，优先级越高
      */
     private Comparator<KNNNode> comparator = new Comparator<KNNNode>() {
         public int compare(KNNNode o1, KNNNode o2) {
-            if (o1.getDistance() >= o2.getDistance()) {
+            return Double.valueOf(o2.getDistance()).compareTo(o1.getDistance());
+            /*if (o1.getDistance() >= o2.getDistance()) {
                 return 1;
             } else {
                 return 0;
-            }
+            }*/
         }
     };
     /**
@@ -73,8 +74,10 @@ public class KNN {
             double distance = calDistance(vldData, t);
             KNNNode top = pq.peek();
             if (top.getDistance() > distance) {
-                pq.remove();
-                pq.add(new KNNNode(i, distance, t.get(t.size() - 1).toString()));
+                pq.poll();
+                pq.offer(new KNNNode(i, distance, t.get(t.size() - 1).toString()));
+                //pq.remove();
+                //pq.add(new KNNNode(i, distance, t.get(t.size() - 1).toString()));
             }
         }
 
@@ -86,7 +89,7 @@ public class KNN {
      * @return 多数类的名称
      */
     private String getMostClass(PriorityQueue<KNNNode> pq) {
-        Map<String, Integer> classCount = new HashMap<String, Integer>();
+        Map<String, Integer> classCount = new HashMap<>();
         for (int i = 0; i < pq.size(); i++) {
             KNNNode node = pq.remove();
             String c = node.getC();
