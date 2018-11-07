@@ -1,13 +1,17 @@
 package cn.edu.nwafu.cie.toxicitypred.controller;
 
 import cn.edu.nwafu.cie.toxicitypred.common.Result;
+import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute;
 import cn.edu.nwafu.cie.toxicitypred.service.DaphniaAcuteService;
+import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +38,12 @@ public class DaphniaAcuteController {
     private static String vldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/vlddes.csv";
     private static String trainAsVldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/trainasvlddes.csv";
 
+    /**
+     * 溞类急性毒性记录新进文件存放路径
+     **/
+    private static String newSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/daphniaacute/new/"; //smi文件路径（新进）
+    private static String newDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/new/"; //描述符文件路径（新进）
+    private static String newDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/daphniaacute/newdes.csv";     //新记录的knn文件
     /*************************************************** smiles->smi文件 ****************************************************/
     @RequestMapping("/dapact/smitrains")
     public Result getTrainSmiFile() {
@@ -107,7 +117,7 @@ public class DaphniaAcuteController {
     /*************************************************** 将dragon生成的描述符提取出来，更新数据库中的记录 ****************************************************/
     @RequestMapping("/dapact/traindestodb")
     public Result updateTrainDesToDB(){
-        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath,"train");
+        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath, DaphniaAcute.class,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("溞类急性毒性训练集数据的描述符在更新数据库时出错！");
         }
@@ -116,7 +126,7 @@ public class DaphniaAcuteController {
 
     @RequestMapping("/dapact/vlddestodb")
     public Result updateVldDesToDB(){
-        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath,"validate");
+        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath,DaphniaAcute.class,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("溞类急性毒性验证集数据的描述符在更新数据库时出错！");
         }
@@ -125,11 +135,11 @@ public class DaphniaAcuteController {
 
     @RequestMapping("/dapact/destodb")
     public Result updateDesToDB(){
-        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath,"train");
+        int trainUpdateSize = daphniaAcuteService.updateDescriptions(trainDragonOutFilesPath,DaphniaAcute.class,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("溞类急性毒性训练集数据的描述符在更新数据库时出错！");
         }
-        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath,"validate");
+        int vldUpdateSize = daphniaAcuteService.updateDescriptions(vldDragonOutFilesPath,DaphniaAcute.class,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("溞类急性毒性验证集数据的描述符在更新数据库时出错！");
         }
@@ -195,5 +205,48 @@ public class DaphniaAcuteController {
             numOfUpdatePreValues += daphniaAcuteService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"train");
         }
         return Result.success(numOfUpdatePreValues);
+    }
+
+    /*************************************************** 新进化合物的处理方法 ****************************************************/
+    @RequestMapping("/dapact/knn")
+    public Result pre(@RequestParam("casno") String casNo, @RequestParam("smiles") String smiles) throws Exception {
+        List<DaphniaAcute> daphniaAcuteList = daphniaAcuteService.getByCasNo(casNo);
+        /*if (daphniaAcuteList != null) {
+            return Result.success(daphniaAcuteList.get(0));
+        }*/
+        if (!FileUtil.validateDir(newSmiFilesPath)) {
+            return Result.errorMsg("新化合物的smi文件存储目录错误！");
+        }
+        if (!FileUtil.validateDir(newDragonOutFilesPath)) {
+            return Result.errorMsg("新化合物的描述符文件存储目录错误！");
+        }
+        //生成smi文件
+        File newSmiFile = new File(newSmiFilesPath + casNo + ".smi");
+        boolean flag = daphniaAcuteService.writeFile(newSmiFile, smiles, false);
+        if (!flag) {
+            return Result.errorMsg("生成smi文件出错！");
+        }
+        //进入dragon，转为描述符文件
+        flag = daphniaAcuteService.smiFileToDragonOutFile(newSmiFile, newDragonOutFilesPath);
+        if(!flag){
+            return Result.errorMsg("dragon计算出错！");
+        }
+        //提取描述符到实体中
+        DaphniaAcute newDaphniaAcute = null;
+        File newDragonOutFile = new File(newDragonOutFilesPath + casNo + ".txt");
+        newDaphniaAcute = daphniaAcuteService.getDescription(newDragonOutFile, DaphniaAcute.class);
+        newDaphniaAcute.setDatatype("new");
+        newDaphniaAcute.setSmiles(smiles);
+        //构造用于knn的新csv文件
+        flag = daphniaAcuteService.getDesFile(new File(newDesFilePath), newDaphniaAcute);
+        if(!flag){
+            return Result.errorMsg("生成csv文件时出错！");
+        }
+        //knn
+        Map<String, String> knnMap = daphniaAcuteService.runKnn(new File(trainDesFilePath), new File(newDesFilePath));
+        newDaphniaAcute.setPreValue(knnMap.get(casNo));
+        //新纪录插入至数据库
+        daphniaAcuteService.insert(newDaphniaAcute);
+        return Result.success(newDaphniaAcute);
     }
 }
