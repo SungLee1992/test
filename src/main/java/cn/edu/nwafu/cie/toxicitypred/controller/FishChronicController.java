@@ -3,8 +3,10 @@ package cn.edu.nwafu.cie.toxicitypred.controller;
 import cn.edu.nwafu.cie.toxicitypred.common.Result;
 import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.FishChronicService;
+import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
@@ -27,19 +29,29 @@ public class FishChronicController {
     private static String trainSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/fishchronic/trainfiles"; //smi文件路径（训练集）
     private static String vldSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/fishchronic/vldfiles";  //smi文件路径（验证集）
     /**
-     * 鱼类急性毒性记录的smi文件存放路径
+     * 鱼类急性毒性记录的描述符文件存放路径
      **/
     private static String trainDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/trainfiles"; //smi文件路径（训练集）
     private static String vldDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vldfiles";  //smi文件路径（验证集）
 
-    //用于knn的csv文件
+    /**
+     * 用于knn的csv文件
+     **/
     private static String trainDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/traindes.csv";
     private static String vldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/vlddes.csv";
     private static String trainAsVldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/trainasvlddes.csv";
+
+    /**
+     * 鱼类急性毒性记录新进文件存放路径
+     **/
+    private static String newSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/fishchronic/new/"; //smi文件路径（新进）
+    private static String newDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/new/"; //描述符文件路径（新进）
+    private static String newDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/fishchronic/newdes.csv";     //新记录的knn文件
+
     /*************************************************** smiles->smi文件 ****************************************************/
     @RequestMapping("/fishchr/smitrains")
-    public Result getTrainSmiFile(){
-        int trainSize = fishChronicService.getSmiFiles(trainSmiFilesPath,"train");
+    public Result getTrainSmiFile() {
+        int trainSize = fishChronicService.getSmiFiles(trainSmiFilesPath, "train");
         if (trainSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据写入smi文件的数量为0，检查smi文件的保存目录！");
         }
@@ -47,8 +59,8 @@ public class FishChronicController {
     }
 
     @RequestMapping("/fishchr/smivlds")
-    public Result getVldSmiFile(){
-        int vldSize = fishChronicService.getSmiFiles(vldSmiFilesPath,"validate");
+    public Result getVldSmiFile() {
+        int vldSize = fishChronicService.getSmiFiles(vldSmiFilesPath, "validate");
         if (vldSize == 0) {
             return Result.errorMsg("鱼类慢性毒性验证集数据写入smi文件的数量为0，检查smi文件的保存目录！");
         }
@@ -56,9 +68,9 @@ public class FishChronicController {
     }
 
     @RequestMapping("/fishchr/smifiles")
-    public Result getSmiFiles(){
-        int vldSize = fishChronicService.getSmiFiles(vldSmiFilesPath,"validate");
-        int trainSize = fishChronicService.getSmiFiles(trainSmiFilesPath,"train");
+    public Result getSmiFiles() {
+        int vldSize = fishChronicService.getSmiFiles(vldSmiFilesPath, "validate");
+        int trainSize = fishChronicService.getSmiFiles(trainSmiFilesPath, "train");
         if (trainSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据写入smi文件的数量为0，检查smi文件的保存目录！");
         }
@@ -73,8 +85,8 @@ public class FishChronicController {
 
     /*************************************************** smi->描述符 ****************************************************/
     @RequestMapping("/fishchr/destrains")
-    public Result getTrainDragonOutFiles(){
-        int trainSize = fishChronicService.smiFilesToDragonOutFiles(trainSmiFilesPath,trainDragonOutFilesPath);
+    public Result getTrainDragonOutFiles() {
+        int trainSize = fishChronicService.smiFilesToDragonOutFiles(trainSmiFilesPath, trainDragonOutFilesPath);
         if (trainSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据dragon转换出错！");
         }
@@ -82,8 +94,8 @@ public class FishChronicController {
     }
 
     @RequestMapping("/fishchr/desvlds")
-    public Result getVldDragonOutFiles(){
-        int vldSize = fishChronicService.smiFilesToDragonOutFiles(vldSmiFilesPath,vldDragonOutFilesPath);
+    public Result getVldDragonOutFiles() {
+        int vldSize = fishChronicService.smiFilesToDragonOutFiles(vldSmiFilesPath, vldDragonOutFilesPath);
         if (vldSize == 0) {
             return Result.errorMsg("鱼类慢性毒性验证集数据dragon转换出错！");
         }
@@ -91,9 +103,9 @@ public class FishChronicController {
     }
 
     @RequestMapping("/fishchr/desfiles")
-    public Result getDragonOutFiles(){
-        int trainSize = fishChronicService.smiFilesToDragonOutFiles(trainSmiFilesPath,trainDragonOutFilesPath);
-        int vldSize = fishChronicService.smiFilesToDragonOutFiles(vldSmiFilesPath,vldDragonOutFilesPath);
+    public Result getDragonOutFiles() {
+        int trainSize = fishChronicService.smiFilesToDragonOutFiles(trainSmiFilesPath, trainDragonOutFilesPath);
+        int vldSize = fishChronicService.smiFilesToDragonOutFiles(vldSmiFilesPath, vldDragonOutFilesPath);
         if (trainSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据dragon转换出错！");
         }
@@ -108,31 +120,31 @@ public class FishChronicController {
 
     /*************************************************** 将dragon生成的描述符提取出来，更新数据库中的记录 ****************************************************/
     @RequestMapping("/fishchr/traindestodb")
-    public Result updateTrainDesToDB(){
-        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath,"train");
-        if(trainUpdateSize==0){
+    public Result updateTrainDesToDB() {
+        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath, FishChronic.class, "train");
+        if (trainUpdateSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
         return Result.success(trainUpdateSize);
     }
 
     @RequestMapping("/fishchr/vlddestodb")
-    public Result updateVldDesToDB(){
-        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath,"validate");
-        if(vldUpdateSize==0){
+    public Result updateVldDesToDB() {
+        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath, FishChronic.class, "validate");
+        if (vldUpdateSize == 0) {
             return Result.errorMsg("鱼类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }
         return Result.success(vldUpdateSize);
     }
 
     @RequestMapping("/fishchr/destodb")
-    public Result updateDesToDB(){
-        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath,"train");
-        if(trainUpdateSize==0){
+    public Result updateDesToDB() {
+        int trainUpdateSize = fishChronicService.updateDescriptions(trainDragonOutFilesPath, FishChronic.class, "train");
+        if (trainUpdateSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
-        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath,"validate");
-        if(vldUpdateSize==0){
+        int vldUpdateSize = fishChronicService.updateDescriptions(vldDragonOutFilesPath, FishChronic.class, "validate");
+        if (vldUpdateSize == 0) {
             return Result.errorMsg("鱼类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }
         Map<String, Object> resultMap = new HashMap<>();
@@ -143,9 +155,9 @@ public class FishChronicController {
 
     /*************************************************** 读数据库生成描述符的csv件，用于knn ****************************************************/
     @RequestMapping("/fishchr/trainscsv")
-    public Result getTrainsCSV(){
+    public Result getTrainsCSV() {
         File trainDesFile = new File(trainDesFilePath);
-        int trainSize = fishChronicService.getDesFile(trainDesFile,"train");
+        int trainSize = fishChronicService.getDesFile(trainDesFile, "train");
         if (trainSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据在转为csv文件时出错！");
         }
@@ -153,9 +165,9 @@ public class FishChronicController {
     }
 
     @RequestMapping("/fishchr/vldscsv")
-    public Result getVldsCSV(){
+    public Result getVldsCSV() {
         File vldDesFile = new File(trainDesFilePath);
-        int vldSize = fishChronicService.getDesFile(vldDesFile,"validate");
+        int vldSize = fishChronicService.getDesFile(vldDesFile, "validate");
         if (vldSize == 0) {
             return Result.errorMsg("鱼类慢性毒性验证集数据在转为csv文件时出错！");
         }
@@ -163,14 +175,14 @@ public class FishChronicController {
     }
 
     @RequestMapping("/fishchr/descsv")
-    public Result getDesCSV(){
+    public Result getDesCSV() {
         File trainDesFile = new File(trainDesFilePath);
         File vldDesFile = new File(vldDesFilePath);
-        int trainSize = fishChronicService.getDesFile(trainDesFile,"train");
+        int trainSize = fishChronicService.getDesFile(trainDesFile, "train");
         if (trainSize == 0) {
             return Result.errorMsg("鱼类慢性毒性训练集数据在转为csv文件时出错！");
         }
-        int vldSize = fishChronicService.getDesFile(vldDesFile,"validate");
+        int vldSize = fishChronicService.getDesFile(vldDesFile, "validate");
         if (vldSize == 0) {
             return Result.errorMsg("鱼类慢性毒性验证集数据在转为csv文件时出错！");
         }
@@ -196,27 +208,70 @@ public class FishChronicController {
 
     /*************************************************** 数据预处理已全部完成，训练集503，验证集127，只剩knn ****************************************************/
     @RequestMapping("/fishchr/vldknn")
-    public Result vldKnnPre(){
+    public Result vldKnnPre() {
         File trainDesFile = new File(trainDesFilePath);
         File vldDesFile = new File(vldDesFilePath);
-        Map<String, String> knnMap = fishChronicService.runKnn(trainDesFile,vldDesFile);
+        Map<String, String> knnMap = fishChronicService.runKnn(trainDesFile, vldDesFile);
         int numOfUpdatePreValues = 0;
-       /* for (Map.Entry<String, String> entry : knnMap.entrySet()) {
-            numOfUpdatePreValues += fishChronicService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"validate");
-        }*/
+        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+            numOfUpdatePreValues += fishChronicService.updatePreValueByCasNo(entry.getKey(), entry.getValue(), "validate");
+        }
         return Result.success(numOfUpdatePreValues);
     }
 
     @RequestMapping("/fishchr/trainknn")
-    public Result trainKnnPre(){
+    public Result trainKnnPre() {
         File trainDesFile = new File(trainDesFilePath);
         File trainAsVldDesFile = new File(trainAsVldDesFilePath);
 
-        Map<String, String> knnMap = fishChronicService.runKnn(trainDesFile,trainAsVldDesFile);
+        Map<String, String> knnMap = fishChronicService.runKnn(trainDesFile, trainAsVldDesFile);
         int numOfUpdatePreValues = 0;
         for (Map.Entry<String, String> entry : knnMap.entrySet()) {
-            numOfUpdatePreValues += fishChronicService.updatePreValueByCasNo(entry.getKey(),entry.getValue(),"train");
+            numOfUpdatePreValues += fishChronicService.updatePreValueByCasNo(entry.getKey(), entry.getValue(), "train");
         }
         return Result.success(numOfUpdatePreValues);
+    }
+
+    /*************************************************** 新进化合物的处理方法 ****************************************************/
+    @RequestMapping("/fishchr/knn")
+    public Result pre(@RequestParam("casno") String casNo, @RequestParam("smiles") String smiles) throws Exception {
+        List<FishChronic> fishChronicList = fishChronicService.getByCasNo(casNo);
+        /*if (fishChronicList != null) {
+            return Result.success(fishChronicList.get(0));
+        }*/
+        if (!FileUtil.validateDir(newSmiFilesPath)) {
+            return Result.errorMsg("新化合物的smi文件存储目录错误！");
+        }
+        if (!FileUtil.validateDir(newDragonOutFilesPath)) {
+            return Result.errorMsg("新化合物的描述符文件存储目录错误！");
+        }
+        //生成smi文件
+        File newSmiFile = new File(newSmiFilesPath + casNo + ".smi");
+        boolean flag = fishChronicService.writeFile(newSmiFile, smiles, false);
+        if (!flag) {
+            return Result.errorMsg("生成smi文件出错！");
+        }
+        //进入dragon，转为描述符文件
+        flag = fishChronicService.smiFileToDragonOutFile(newSmiFile, newDragonOutFilesPath);
+        if(!flag){
+            return Result.errorMsg("dragon计算出错！");
+        }
+        //提取描述符到实体中
+        FishChronic newFishChronic = null;
+        File newDragonOutFile = new File(newDragonOutFilesPath + casNo + ".txt");
+        newFishChronic = fishChronicService.getDescription(newDragonOutFile, FishChronic.class);
+        newFishChronic.setDatatype("new");
+        newFishChronic.setSmiles(smiles);
+        //构造用于knn的新csv文件
+        flag = fishChronicService.getDesFile(new File(newDesFilePath), newFishChronic);
+        if(!flag){
+            return Result.errorMsg("生成csv文件时出错！");
+        }
+        //knn
+        Map<String, String> knnMap = fishChronicService.runKnn(new File(trainDesFilePath), new File(newDesFilePath));
+        newFishChronic.setPreValue(knnMap.get(casNo));
+        //新纪录插入至数据库
+        fishChronicService.insert(newFishChronic);
+        return Result.success(newFishChronic);
     }
 }

@@ -30,7 +30,7 @@ public interface BaseDao<T> {
      * @return: T
      * 通过casNo或者id获取相应的记录
      */
-    public T getByCasNo(String casNo);
+    public List<T> getByCasNo(String casNo);
 
     /**
      * @param: []

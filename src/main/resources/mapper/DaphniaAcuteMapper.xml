@@ -42,7 +42,7 @@
     delete from daphnia_acute
     where id = #{id,jdbcType=INTEGER}
   </delete>
-    <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute">
+    <insert id="insertRecord" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute">
     insert into daphnia_acute (id, cas_no, smiles, 
       nCrq, F04NS, Bo4OO, F08OO,
       Eig08_AEAbo, B02NCl, EC50_48h, 

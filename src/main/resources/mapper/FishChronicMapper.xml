@@ -39,7 +39,7 @@
     delete from fish_chronic
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.FishChronic" >
+  <insert id="insertRecord" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.FishChronic" >
     insert into fish_chronic (id, cas_no, smiles, 
       SpMaxA_EAdm, MPC07, CATS2D_05_LL, 
       LC50_96h, exp_value, pre_value, 

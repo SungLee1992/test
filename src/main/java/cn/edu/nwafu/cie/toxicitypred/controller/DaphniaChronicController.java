@@ -209,7 +209,7 @@ public class DaphniaChronicController {
     /*************************************************** 将dragon生成的描述符提取出来，更新数据库中的记录 ****************************************************/
     @RequestMapping("/dapchr/traindestodb")
     public Result updateTrainDesToDB() {
-        int trainUpdateSize = daphniaChronicService.updateDescriptions(trainDragonOutFilesPath, "train");
+        int trainUpdateSize = daphniaChronicService.updateDescriptions(trainDragonOutFilesPath,DaphniaChronic.class, "train");
         if (trainUpdateSize == 0) {
             return Result.errorMsg("溞类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
@@ -218,7 +218,7 @@ public class DaphniaChronicController {
 
     @RequestMapping("/dapchr/vlddestodb")
     public Result updateVldDesToDB() {
-        int vldUpdateSize = daphniaChronicService.updateDescriptions(vldDragonOutFilesPath, "validate");
+        int vldUpdateSize = daphniaChronicService.updateDescriptions(vldDragonOutFilesPath, DaphniaChronic.class,"validate");
         if (vldUpdateSize == 0) {
             return Result.errorMsg("溞类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }
@@ -227,11 +227,11 @@ public class DaphniaChronicController {
 
     @RequestMapping("/dapchr/destodb")
     public Result updateDesToDB() {
-        int trainUpdateSize = daphniaChronicService.updateDescriptions(trainDragonOutFilesPath, "train");
+        int trainUpdateSize = daphniaChronicService.updateDescriptions(trainDragonOutFilesPath,DaphniaChronic.class, "train");
         if (trainUpdateSize == 0) {
             return Result.errorMsg("溞类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
-        int vldUpdateSize = daphniaChronicService.updateDescriptions(vldDragonOutFilesPath, "validate");
+        int vldUpdateSize = daphniaChronicService.updateDescriptions(vldDragonOutFilesPath, DaphniaChronic.class,"validate");
         if (vldUpdateSize == 0) {
             return Result.errorMsg("溞类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }

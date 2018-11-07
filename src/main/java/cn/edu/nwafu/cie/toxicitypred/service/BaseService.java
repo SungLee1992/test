@@ -29,6 +29,10 @@ public abstract class BaseService<T> {
         return baseDao.get(id);
     }
 
+    public List<T> getByCasNo(String casNo) {
+        return baseDao.getByCasNo(casNo);
+    }
+
     public List<T> getAll() {
         return baseDao.getAll();
     }
@@ -49,7 +53,7 @@ public abstract class BaseService<T> {
         return baseDao.deleteRecord(t);
     }
 
-    public int updatePreValueByCasNo(String casNo, String preValue, String dataType){
+    public int updatePreValueByCasNo(String casNo, String preValue, String dataType) {
         return baseDao.updatePreValueByCasNo(casNo, preValue, dataType);
     }
 
@@ -319,7 +323,8 @@ public abstract class BaseService<T> {
         for (Map.Entry<String, Object> entry : vldDatasMap.entrySet()) {
             Integer preValue = -1;
             List<Double> vldData = (List<Double>) entry.getValue();
-            preValue = Math.round(Float.parseFloat((knn.knn(trainDatas, vldData, 3)))); //这里规定K取值
+            //preValue = Math.round(Float.parseFloat((knn.knn(trainDatas, vldData, 3)))); //这里规定K取值
+            preValue = knn.knn(trainDatas, vldData, 3);
             result.put(entry.getKey(), String.valueOf(preValue));
             //********* 在生产环境中，以下可以不执行**********//*
             System.out.print("测试元组: " + entry.getKey());
@@ -411,10 +416,10 @@ public abstract class BaseService<T> {
         casNoField.set(t, file.getName().split("\\.")[0]);
         return t;
     }*/
-
-    public T getDescription(File file) throws IllegalAccessException, InstantiationException, IOException, NoSuchFieldException {
-        Class clazz = t.getClass();
-        t = (T) clazz.newInstance();
+    public T getDescription(File file, Class<T> clazz) throws IllegalAccessException, InstantiationException, IOException, NoSuchFieldException {
+        t = clazz.newInstance();
+        //Class clazz = t.getClass();
+        //t = (T) clazz.newInstance();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         // 读取描述符标题
         String title = reader.readLine();
@@ -456,7 +461,7 @@ public abstract class BaseService<T> {
      * @return: int
      * @description: 读取描述符txt目录，批量更新
      */
-    public int updateDescriptions(String desDir, String dataType) {
+    public int updateDescriptions(String desDir, Class<T> clazz, String dataType) {
         if (!FileUtil.validateDir(desDir)) {
             logger.warn(desDir + "***********描述符文件保存的目标目录不合法！");
             return 0;
@@ -465,7 +470,7 @@ public abstract class BaseService<T> {
         File files[] = new File(desDir).listFiles();
         //批量更新
         for (File desFile : files) {
-            if (updateDescription(desFile, dataType)) {
+            if (updateDescription(desFile, clazz,dataType)) {
                 numOfUpdateDes++;
             }
         }
@@ -478,12 +483,12 @@ public abstract class BaseService<T> {
      * @return: boolean
      * @description: 读取单个dragon生成的描述符txt文件，取得对应描述符，更新数据库
      */
-    public boolean updateDescription(File desFile, String dataType) {
+    public boolean updateDescription(File desFile, Class<T> clazz, String dataType) {
         try {
             //得到描述符至实体中
-            t = getDescription(desFile);
+            t = getDescription(desFile,clazz);
             // 设置dataType
-            Class clazz = t.getClass();
+            //Class clazz = t.getClass();
             Field dataTypeField = clazz.getDeclaredField("datatype");
             dataTypeField.setAccessible(true);
             dataTypeField.set(t, dataType);
@@ -510,6 +515,18 @@ public abstract class BaseService<T> {
             }
         }
         return numOfDesRecords;
+    }
+
+    /**
+     * @param desFile
+     * @return: int
+     * @description: 根据新进记录的实体读取knn所需的描述符，写入到文件中
+     */
+    public boolean getDesFile(File desFile, T t) {
+        if (!writeFile(desFile, creatDescription(t, "new"), false)) {
+            return false;
+        }
+        return true;
     }
 
     public abstract String creatDescription(Object t, String dataType);

@@ -2,6 +2,7 @@ package cn.edu.nwafu.cie.toxicitypred.controller;
 
 import cn.edu.nwafu.cie.toxicitypred.common.Result;
 import cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic;
+import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.AlgalChronicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -221,7 +222,7 @@ public class AlgalChronicController {
     /*************************************************** 将dragon生成的描述符提取出来，更新数据库中的记录 ****************************************************/
     @RequestMapping("/algchr/traindestodb")
     public Result updateTrainDesToDB(){
-        int trainUpdateSize = algalChronicService.updateDescriptions(trainDragonOutFilesPath,"train");
+        int trainUpdateSize = algalChronicService.updateDescriptions(trainDragonOutFilesPath,AlgalChronic.class,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("藻类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
@@ -230,7 +231,7 @@ public class AlgalChronicController {
 
     @RequestMapping("/algchr/vlddestodb")
     public Result updateVldDesToDB(){
-        int vldUpdateSize = algalChronicService.updateDescriptions(vldDragonOutFilesPath,"validate");
+        int vldUpdateSize = algalChronicService.updateDescriptions(vldDragonOutFilesPath,AlgalChronic.class,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("藻类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }
@@ -239,11 +240,11 @@ public class AlgalChronicController {
 
     @RequestMapping("/algchr/destodb")
     public Result updateDesToDB(){
-        int trainUpdateSize = algalChronicService.updateDescriptions(trainDragonOutFilesPath,"train");
+        int trainUpdateSize = algalChronicService.updateDescriptions(trainDragonOutFilesPath, AlgalChronic.class,"train");
         if(trainUpdateSize==0){
             return Result.errorMsg("藻类慢性毒性训练集数据的描述符在更新数据库时出错！");
         }
-        int vldUpdateSize = algalChronicService.updateDescriptions(vldDragonOutFilesPath,"validate");
+        int vldUpdateSize = algalChronicService.updateDescriptions(vldDragonOutFilesPath,AlgalChronic.class,"validate");
         if(vldUpdateSize==0){
             return Result.errorMsg("藻类慢性毒性验证集数据的描述符在更新数据库时出错！");
         }

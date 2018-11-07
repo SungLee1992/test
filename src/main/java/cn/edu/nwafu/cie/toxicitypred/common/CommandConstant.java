@@ -9,9 +9,7 @@ import java.io.File;
  */
 public class CommandConstant {
 
-    //private static File dragonInput = new File(System.getProperty("user.dir") + "/files/dragoninput.smi");
     private static File dragonInput = new File("D:\\nies\\Dragon 7\\data\\dragoninput.smi");
-    //private static File dragonOutput = new File(System.getProperty("user.dir") + "/files/dragonoutput.txt");
     private static File dragonOutput = new File("D:\\nies\\Dragon 7\\data\\dragonoutput.txt");
     private static String dragonTemplate = System.getProperty("user.dir") + "/files/dragontemplate.drs";
 
@@ -19,13 +17,26 @@ public class CommandConstant {
         return dragonInput;
     }
 
+    public static void setDragonInput(File dragonInput) {
+        CommandConstant.dragonInput = dragonInput;
+    }
+
     public static File getDragonOutput() {
         return dragonOutput;
+    }
+
+    public static void setDragonOutput(File dragonOutput) {
+        CommandConstant.dragonOutput = dragonOutput;
     }
 
     public static String getDragonTemplate() {
         return dragonTemplate;
     }
+
+    public static void setDragonTemplate(String dragonTemplate) {
+        CommandConstant.dragonTemplate = dragonTemplate;
+    }
+
 
     /** openbabel-smi文件生成mop文件的命令 */
     public static String smiFileToMopFileCmd(String smiPath, String mopPath, String casNo){
@@ -62,6 +73,5 @@ public class CommandConstant {
         System.out.println(cmd);
         return cmd;
     }
-
 
 }

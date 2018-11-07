@@ -1,16 +1,26 @@
 package cn.edu.nwafu.cie.toxicitypred.controller;
 
+import cn.edu.nwafu.cie.toxicitypred.common.CommandConstant;
+import cn.edu.nwafu.cie.toxicitypred.common.Result;
 import cn.edu.nwafu.cie.toxicitypred.dao.AlgalChronicDao;
 import cn.edu.nwafu.cie.toxicitypred.dao.DaphniaAcuteDao;
 import cn.edu.nwafu.cie.toxicitypred.dao.DaphniaChronicDao;
 import cn.edu.nwafu.cie.toxicitypred.dao.FishChronicDao;
 import cn.edu.nwafu.cie.toxicitypred.entities.*;
+import cn.edu.nwafu.cie.toxicitypred.service.AlgalChronicService;
+import cn.edu.nwafu.cie.toxicitypred.service.DaphniaAcuteService;
+import cn.edu.nwafu.cie.toxicitypred.service.DaphniaChronicService;
+import cn.edu.nwafu.cie.toxicitypred.service.FishChronicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +39,64 @@ public class ForecastController {
     @Autowired
     private AlgalChronicDao algalChronicDao;
     private static boolean ISUPDATE = false;
+
+    @Autowired
+    private DaphniaChronicService daphniaChronicService;
+    @Autowired
+    private FishChronicService fishChronicService;
+    @Autowired
+    private AlgalChronicService algalChronicService;
+    @Autowired
+    private DaphniaAcuteService daphniaAcuteService;
+
+
+    @RequestMapping("/pre")
+    public Result toxityPred(@RequestParam("type") String type, @RequestParam("casno") String casNo, @RequestParam("smiles") String smiles) throws IOException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        String[] typeAry = type.split(",");
+        Result result = new Result();
+        for (String typeItem : typeAry) {
+            switch (typeItem) {
+                case "1": // 大型溞慢性毒素 DaphniaChronic
+                    List<DaphniaChronic> daphniaChronicList = daphniaChronicService.getByCasNo(casNo);
+                    if (daphniaChronicList != null) {
+                        return Result.success(daphniaChronicList.get(0));
+                    }
+                    //TODO 数据处理部分
+
+                    //return Result.success(daphniaChronicService.getByCasNo(casNo));
+                    break;
+                case "2":
+                    try {
+                        result = new FishChronicController().pre(casNo, smiles);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return result;
+                case "3":
+                    List<AlgalChronic> algalChronicList = algalChronicService.getByCasNo(casNo);
+                    if (algalChronicList != null) {
+                        return Result.success(algalChronicList.get(0));
+                    }
+                    //TODO 数据处理部分
+
+                    //return Result.success(algalChronicService.getByCasNo(casNo));
+                    break;
+
+                case "4":
+                    List<DaphniaAcute> daphniaAcuteList = daphniaAcuteService.getByCasNo(casNo);
+                    if (daphniaAcuteList != null) {
+                        return Result.success(daphniaAcuteList.get(0));
+                    }
+                    //TODO 数据处理部分
+
+                    //return Result.success(daphniaAcuteService.getByCasNo(casNo));
+                    break;
+            }
+
+        }
+
+        return null;
+    }
 
 
     @RequestMapping("/single")
@@ -82,7 +150,7 @@ public class ForecastController {
                         //algalChronicDao.insertRecord((AlgalChronic) object);
                     }
                     break;
-                case "4":// 鱼类急性毒素 DaphniaAcute
+                case "4":// 溞类急性毒素 DaphniaAcute
                     object = daphniaAcuteDao.getByCasNo(CASNO);
                     if (object != null) {
                         break;
@@ -93,7 +161,7 @@ public class ForecastController {
                     if (ISUPDATE) {
                         //daphniaAcuteDao.updateByCasno((DaphniaAcute)object);
                     } else {
-                       // daphniaAcuteDao.insertRecord((DaphniaAcute) object);
+                        // daphniaAcuteDao.insertRecord((DaphniaAcute) object);
                     }
                     break;
                 default:

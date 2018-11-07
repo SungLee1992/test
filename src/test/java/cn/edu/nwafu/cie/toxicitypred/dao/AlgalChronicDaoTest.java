@@ -39,9 +39,9 @@ public class AlgalChronicDaoTest {
 
     //@Test
     public void getByCasNo() {
-        AlgalChronic algalChronic = new AlgalChronic();
-        algalChronic = algalChronicDao.getByCasNo("000067-48-1");
-        System.out.println(algalChronic.getSmiles());
+        //AlgalChronic algalChronic = new AlgalChronic();
+        //algalChronic = algalChronicDao.getByCasNo("000067-48-1");
+        //System.out.println(algalChronic.getSmiles());
     }
 
     //@Test
