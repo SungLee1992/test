@@ -49,53 +49,81 @@ public class ForecastController {
     @Autowired
     private DaphniaAcuteService daphniaAcuteService;
 
+    @Autowired
+    private FishChronicController fishChronicController;
+    @Autowired
+    private DaphniaChronicController daphniaChronicController;
+    @Autowired
+    private AlgalChronicController algalChronicController;
+    @Autowired
+    private DaphniaAcuteController daphniaAcuteController;
+
 
     @RequestMapping("/pre")
-    public Result toxityPred(@RequestParam("type") String type, @RequestParam("casno") String casNo, @RequestParam("smiles") String smiles) throws IOException, NoSuchFieldException, InstantiationException, IllegalAccessException {
-        String[] typeAry = type.split(",");
-        Result result = new Result();
-        for (String typeItem : typeAry) {
+    public Result toxityPred(@RequestParam("type") String[] typeAry, @RequestParam("casNo") String casNo, @RequestParam("smiles") String smiles) throws IOException, NoSuchFieldException, InstantiationException, IllegalAccessException {
+        Map<String, Object> data = new HashMap<>();
+        for (String typeItem : typeAry) {// 数据预处理:数据库中存在时直接返回，不存在时调用接口进行预处理，将结果存入数据库
+            Object object = null;
             switch (typeItem) {
-                case "1": // 大型溞慢性毒素 DaphniaChronic
+                case "1":
+                    // 查询数据库
                     List<DaphniaChronic> daphniaChronicList = daphniaChronicService.getByCasNo(casNo);
-                    if (daphniaChronicList != null) {
-                        return Result.success(daphniaChronicList.get(0));
+                    if (daphniaChronicList != null && daphniaChronicList.size() > 0) {
+                        object = daphniaChronicList.get(0);
+                        break;
                     }
-                    //TODO 数据处理部分
-
-                    //return Result.success(daphniaChronicService.getByCasNo(casNo));
-                    break;
-                case "2":
-                    try {
-                        result = new FishChronicController().pre(casNo, smiles);
+                    try {// 数据库不存在时预测
+                        object = daphniaChronicController.pre(casNo, smiles).getData();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return result;
-                case "3":
-                    List<AlgalChronic> algalChronicList = algalChronicService.getByCasNo(casNo);
-                    if (algalChronicList != null) {
-                        return Result.success(algalChronicList.get(0));
-                    }
-                    //TODO 数据处理部分
-
-                    //return Result.success(algalChronicService.getByCasNo(casNo));
                     break;
-
-                case "4":
-                    List<DaphniaAcute> daphniaAcuteList = daphniaAcuteService.getByCasNo(casNo);
-                    if (daphniaAcuteList != null) {
-                        return Result.success(daphniaAcuteList.get(0));
+                case "2":
+                    // 查询数据库
+                    List<FishChronic> fishChronicList = fishChronicService.getByCasNo(casNo);
+                    if (fishChronicList != null && fishChronicList.size() > 0) {
+                        object = fishChronicList.get(0);
+                        break;
                     }
-                    //TODO 数据处理部分
-
-                    //return Result.success(daphniaAcuteService.getByCasNo(casNo));
+                    try {// 数据库不存在时预测
+                        object = fishChronicController.pre(casNo, smiles).getData();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "3":
+                    // 查询数据库
+                    List<AlgalChronic> algalChronicList = algalChronicService.getByCasNo(casNo);
+                    if (algalChronicList != null && algalChronicList.size() > 0) {
+                        object = algalChronicList.get(0);
+                        break;
+                    }
+                    try {// 数据库不存在时预测
+                        object = algalChronicController.pre(casNo, smiles).getData();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "4":
+                    // 查询数据库
+                    List<DaphniaAcute> daphniaAcuteList = daphniaAcuteService.getByCasNo(casNo);
+                    if (daphniaAcuteList != null && daphniaAcuteList.size() > 0) {
+                        object = daphniaAcuteList.get(0);
+                        break;
+                    }
+                    try {// 数据库不存在时预测
+                        object = daphniaAcuteController.pre(casNo, smiles).getData();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
-
+            if (object != null) {
+                data.put(typeItem, object);
+            }
         }
 
-        return null;
+        return Result.success(data);
     }
 
 

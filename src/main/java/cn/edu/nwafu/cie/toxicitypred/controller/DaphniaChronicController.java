@@ -5,6 +5,7 @@ import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.DaphniaChronicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
@@ -259,6 +260,12 @@ public class DaphniaChronicController {
         resultMap.put("trainSize", trainSize);
         resultMap.put("vldSize", vldSize);
         return Result.success(resultMap);
+    }
+
+    /***************************************************新进化合物的处理方法****************************************************/
+    @RequestMapping("/dapchr/knn")
+    public Result pre(@RequestParam("casno") String casNo, @RequestParam("smiles") String smiles) throws Exception {
+        return Result.success(null);// TODO
     }
 
 }
