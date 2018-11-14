@@ -63,6 +63,10 @@ public abstract class BaseService<T> {
         return casNo;
     }
 
+    public List<T> getByDataType(String dataType){
+        return baseDao.getByDataType(dataType);
+    }
+
     /**
      * @param: [file, content，append] append表示写文件的方式，true为追加，false为覆盖
      * @return: boolean
