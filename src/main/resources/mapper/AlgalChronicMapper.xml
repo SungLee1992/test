@@ -167,7 +167,7 @@
                 pre_value = #{preValue,jdbcType=VARCHAR},
             </if>
         </set>
-        where casNo = #{casNo} and datatype = #{datatype}
+        where cas_no = #{casNo} and datatype = #{datatype}
     </update>
     <update id="updateRecourd" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic">
     update algal_chronic
