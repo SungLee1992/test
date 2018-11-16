@@ -10,8 +10,10 @@ import java.io.File;
 public class CommandConstant {
 
     private static File dragonInput = new File("D:\\nies\\Dragon 7\\data\\dragoninput.smi");
-    private static File dragonOutput = new File("D:\\nies\\Dragon 7\\data\\dragonoutput.txt");
+    private static File molInput = new File("D:\\nies\\Dragon 7\\data\\molinput.mol");
     private static String dragonTemplate = System.getProperty("user.dir") + "/files/dragontemplate.drs";
+    private static String molDragonTemplate = System.getProperty("user.dir") + "/files/moldragontemplate.drs";
+    private static File dragonOutput = new File("D:\\nies\\Dragon 7\\data\\moldragonout.txt");
 
     public static File getDragonInput() {
         return dragonInput;
@@ -37,6 +39,21 @@ public class CommandConstant {
         CommandConstant.dragonTemplate = dragonTemplate;
     }
 
+    public static File getMolInput() {
+        return molInput;
+    }
+
+    public static void setMolInput(File molInput) {
+        CommandConstant.molInput = molInput;
+    }
+
+    public static String getMolDragonTemplate() {
+        return molDragonTemplate;
+    }
+
+    public static void setMolDragonTemplate(String molDragonTemplate) {
+        CommandConstant.molDragonTemplate = molDragonTemplate;
+    }
 
     /** openbabel-smi文件生成mop文件的命令 */
     public static String smiFileToMopFileCmd(String smiPath, String mopPath, String casNo){
@@ -70,9 +87,23 @@ public class CommandConstant {
         return cmd;
     }
 
-    /* dragon-txt文件生成描述符文件的命令*/
+    /* openbabel-out文件生成smi文件的命令*/
+    public static String outFileToMolFileCmd(String outFile, String smiDir,String casNo){
+        String cmd = "obabel "+outFile+" -O "+smiDir+"/"+casNo+".mol --gen3d";  //-xn表示在生成的文件中去掉文件路径
+        System.out.println(cmd);
+        return cmd;
+    }
+
+    /* smi文件生成描述符文件的命令*/
     public static String smiToDescriptionFileCmd(){
         String cmd = "dragon7shell -s "+getDragonTemplate();
+        System.out.println(cmd);
+        return cmd;
+    }
+
+    /* mol文件生成描述符文件的命令*/
+    public static String molToDescriptionFileCmd(){
+        String cmd = "dragon7shell -s "+getMolDragonTemplate();
         System.out.println(cmd);
         return cmd;
     }

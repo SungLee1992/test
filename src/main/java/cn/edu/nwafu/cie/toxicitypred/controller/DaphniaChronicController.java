@@ -142,7 +142,7 @@ public class DaphniaChronicController {
     public Result getVldSmiFiles() {
         int size = daphniaChronicService.outFilesToSmiFiles(vldOutFilesPath, vldSmiFilesPath);
         if (size == 0) {
-            return Result.errorMsg("溞类慢性毒性验证集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("溞类慢性毒性验证集数据out文件转为smi文件的数量为0！");
         }
         return Result.success(size);
     }
@@ -151,7 +151,7 @@ public class DaphniaChronicController {
     public Result getTrainSmiFiles() {
         int size = daphniaChronicService.outFilesToSmiFiles(trainOutFilesPath, trainSmiFilesPath);
         if (size == 0) {
-            return Result.errorMsg("溞类慢性毒性训练集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("溞类慢性毒性训练集数据out文件转为smi文件的数量为0！");
         }
         return Result.success(size);
     }
@@ -161,10 +161,10 @@ public class DaphniaChronicController {
         int trainSize = daphniaChronicService.outFilesToSmiFiles(trainOutFilesPath, trainSmiFilesPath);
         int vldSize = daphniaChronicService.outFilesToSmiFiles(vldOutFilesPath, vldSmiFilesPath);
         if (trainSize == 0) {
-            return Result.errorMsg("溞类慢性毒性训练集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("溞类慢性毒性训练集数据out文件转为smi文件的数量为0！");
         }
         if (vldSize == 0) {
-            return Result.errorMsg("溞类慢性毒性验证集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("溞类慢性毒性验证集数据out文件转为smi文件的数量为0！");
         }
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("trainSize", trainSize);

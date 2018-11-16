@@ -200,6 +200,42 @@ public abstract class BaseService<T> {
         return numOfSmiFiles;
     }
 
+    /***********************************  out -> mol  ***********************************/
+    /**
+     * @param: [outFile, smiPath, casNo]
+     * @return: boolean
+     * 输入单个out文件，经过openbabel转出为mol文件
+     */
+    public boolean outFileToMolFile(File outFile, String molDir) {
+        String casNo = this.getCasNo(outFile);
+        String cmd = CommandConstant.outFileToMolFileCmd(outFile.getPath(), molDir, casNo);
+        return ExcuteCommandUtil.excute(cmd);
+    }
+
+
+    /**
+     * @param: [outFilePath, smiPath]
+     * @return: int
+     * 输入out文件目录，经过openbabel转为smi文件
+     */
+    public int outFilesToMolFiles(String outDir, String molDir) {
+        if (!FileUtil.validateDir(molDir)) {
+            logger.warn(molDir + "***********mol目录不合法！");
+            return 0;
+        }
+        File[] outFiles = FileUtil.filterFile(".out", outDir);
+        if (outFiles == null || outFiles.length == 0) {
+            return 0;
+        }
+        int numOfMolFiles = 0;
+        for (File outFile : outFiles) {
+            if (outFileToMolFile(outFile, molDir)) {
+                numOfMolFiles++;
+            }
+        }
+        return numOfMolFiles;
+    }
+
     /***********************************  smi -> 描述符  ***********************************/
     /**
      * @param: []
@@ -228,8 +264,8 @@ public abstract class BaseService<T> {
         }
 
         //将dragon计算得到的文件再复制回描述符文件所在的目录
-        File dragonoutput = CommandConstant.getDragonOutput();
-        flag = FileUtil.copyFile(dragonoutput, dragonOutFilesDir, getCasNo(smiFile) + ".txt");
+        File dragonOutPutFile = CommandConstant.getDragonOutput();
+        flag = FileUtil.copyFile(dragonOutPutFile, dragonOutFilesDir, getCasNo(smiFile) + ".txt");
         if (!flag) {
             logger.warn(getCasNo(smiFile) + "***********描述符文件保存的目标目录失败！");
             return false;
@@ -254,6 +290,66 @@ public abstract class BaseService<T> {
         int numOfdragonOutFiles = 0;
         for (File smiFile : smiFiles) {
             if (smiFileToDragonOutFile(smiFile, dragonOutFilesDir)) {
+                numOfdragonOutFiles++;
+            }
+        }
+        return numOfdragonOutFiles;
+    }
+
+    /***********************************  mol -> 描述符  ***********************************/
+    /**
+     * @param: []
+     * @return: boolean
+     * 首先将输入文件中的smiles表达式读入到模板规定的输入文件中，然后执行dragon，再将生成的文件复制到dragonoutfiles目录中
+     */
+    public boolean molFileToDragonOutFile(File molFile, String dragonOutFilesDir) {
+       /* if (!FileUtil.validateDir(dragonOutFilesDir)) {
+            logger.warn(dragonOutFilesDir + "***********描述符文件保存的目标目录不合法！");
+            return false;
+        }*/
+        //首先将输入文件中的mol表达式读入到模板规定的输入文件中
+        File molInput = CommandConstant.getMolInput();
+        boolean flag = FileUtil.copyFile(molFile, molInput.getParent(), molInput.getName());
+        if (!flag) {
+            logger.warn(getCasNo(molFile) + "***********mol读入到模板文件中失败！");
+            return false;
+        }
+        //只有当mol读入模板中成功后，才执行dragon计算描述符
+        else {
+            String cmd = CommandConstant.molToDescriptionFileCmd();
+            if (!ExcuteCommandUtil.excute(cmd)) {
+                logger.warn("dragon执行出错！");
+                return false;
+            }
+        }
+
+        //将dragon计算得到的文件再复制回描述符文件所在的目录
+        File dragonOutputFile = CommandConstant.getDragonOutput();
+        flag = FileUtil.copyFile(dragonOutputFile, dragonOutFilesDir, getCasNo(molFile) + ".txt");
+        if (!flag) {
+            logger.warn(getCasNo(molFile) + "***********描述符文件保存的目标目录失败！");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param: [smiDir, dragonOutFilesDir]
+     * @return: int
+     * 输入smi文件到dragon，计算得出描述符文件的批量执行方法
+     */
+    public int molFilesToDragonOutFiles(String molDir, String dragonOutFilesDir) {
+        if (!FileUtil.validateDir(dragonOutFilesDir)) {
+            logger.warn(dragonOutFilesDir + "***********描述符文件保存的目标目录不合法！");
+            return 0;
+        }
+        File[] molFiles = FileUtil.filterFile(".mol", molDir);
+        if (molFiles == null || molFiles.length == 0) {
+            return 0;
+        }
+        int numOfdragonOutFiles = 0;
+        for (File molFile : molFiles) {
+            if (molFileToDragonOutFile(molFile, dragonOutFilesDir)) {
                 numOfdragonOutFiles++;
             }
         }
@@ -340,11 +436,6 @@ public abstract class BaseService<T> {
         return result;
     }
 
-    //TODO 描述符写入文件中供knn用，文件存放在各自的dragonoutfiles目录下（在各自的Service中写）
-
-
-    //TODO 新化合物进入系统后的处理逻辑（在各自的Controller中写）
-
     private static Map<String, String> map = new HashMap<>();// 实体类中描述符与文件中描述符对应关系
 
     static {
@@ -352,7 +443,7 @@ public abstract class BaseService<T> {
         map.put("spmax6Bhm", "SpMax6_Bh(m)");
         map.put("gats5i", "GATS5i");
         map.put("mor15s", "Mor15s");
-        map.put("logkow", "MLOGP");
+        map.put("logkow", "ALOGP");
         map.put("ats6m", "ATS6m");
         // 溞急性描述符
         map.put("ncrq", "nCrq");

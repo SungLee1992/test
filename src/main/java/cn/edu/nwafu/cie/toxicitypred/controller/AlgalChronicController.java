@@ -38,6 +38,11 @@ public class AlgalChronicController {
     private static String trainSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/algalchronic/trainfiles"; //smi文件路径（训练集）
     private static String vldSmiFilesPath = System.getProperty("user.dir") + "/files/smifiles/algalchronic/vldfiles";  //smi文件路径（验证集）
     /**
+     * 藻类慢性毒性记录的mol文件存放路径
+     **/
+    private static String vldMolFilesPath = System.getProperty("user.dir") + "/files/molfiles/algalchronic/vldfiles";
+    private static String trainMolFilesPath = System.getProperty("user.dir") + "/files/molfiles/algalchronic/trainfiles";
+    /**
      * 藻类慢性毒性记录的描述符txt文件存放路径
      **/
     private static String trainDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/trainfiles"; //smi文件路径（训练集）
@@ -155,7 +160,7 @@ public class AlgalChronicController {
     public Result getVldSmiFiles() {
         int size = algalChronicService.outFilesToSmiFiles(vldOutFilesPath, vldSmiFilesPath);
         if (size == 0) {
-            return Result.errorMsg("藻类慢性毒性验证集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("藻类慢性毒性验证集数据out文件转为smi文件的数量为0！");
         }
         return Result.success(size);
     }
@@ -164,7 +169,7 @@ public class AlgalChronicController {
     public Result getTrainSmiFiles() {
         int size = algalChronicService.outFilesToSmiFiles(trainOutFilesPath, trainSmiFilesPath);
         if (size == 0) {
-            return Result.errorMsg("藻类慢性毒性训练集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("藻类慢性毒性训练集数据out文件转为smi文件的数量为0！");
         }
         return Result.success(size);
     }
@@ -174,10 +179,45 @@ public class AlgalChronicController {
         int trainSize = algalChronicService.outFilesToSmiFiles(trainOutFilesPath, trainSmiFilesPath);
         int vldSize = algalChronicService.outFilesToSmiFiles(vldOutFilesPath, vldSmiFilesPath);
         if (trainSize == 0) {
-            return Result.errorMsg("藻类慢性毒性训练集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("藻类慢性毒性训练集数据out文件转为smi文件的数量为0！");
         }
         if (vldSize == 0) {
-            return Result.errorMsg("藻类慢性毒性验证集数据mop文件转为smi文件的数量为0！");
+            return Result.errorMsg("藻类慢性毒性验证集数据out文件转为smi文件的数量为0！");
+        }
+        HashMap<String, Object> resultMap = new HashMap<>();
+        resultMap.put("trainSize", trainSize);
+        resultMap.put("vldSize", vldSize);
+        return Result.success(resultMap);
+    }
+
+    /*************************************************** out->mol ****************************************************/
+    @RequestMapping("/algchr/molvlds")
+    public Result getVldMolFiles() {
+        int size = algalChronicService.outFilesToMolFiles(vldOutFilesPath, vldMolFilesPath);
+        if (size == 0) {
+            return Result.errorMsg("藻类慢性毒性验证集数据out文件转为mol文件的数量为0！");
+        }
+        return Result.success(size);
+    }
+
+    @RequestMapping("/algchr/moltrains")
+    public Result getTrainMolFiles() {
+        int size = algalChronicService.outFilesToMolFiles(trainOutFilesPath, trainMolFilesPath);
+        if (size == 0) {
+            return Result.errorMsg("藻类慢性毒性训练集数据out文件转为mol文件的数量为0！");
+        }
+        return Result.success(size);
+    }
+
+    @RequestMapping("/algchr/molfiles")
+    public Result getMolFiles() {
+        int trainSize = algalChronicService.outFilesToMolFiles(trainOutFilesPath, trainMolFilesPath);
+        int vldSize = algalChronicService.outFilesToMolFiles(vldOutFilesPath, vldMolFilesPath);
+        if (trainSize == 0) {
+            return Result.errorMsg("藻类慢性毒性训练集数据out文件转为mol文件的数量为0！");
+        }
+        if (vldSize == 0) {
+            return Result.errorMsg("藻类慢性毒性验证集数据out文件转为mol文件的数量为0！");
         }
         HashMap<String, Object> resultMap = new HashMap<>();
         resultMap.put("trainSize", trainSize);
@@ -208,6 +248,40 @@ public class AlgalChronicController {
     public Result getDragonOutFiles() {
         int trainSize = algalChronicService.smiFilesToDragonOutFiles(trainSmiFilesPath, trainDragonOutFilesPath);
         int vldSize = algalChronicService.smiFilesToDragonOutFiles(vldSmiFilesPath, vldDragonOutFilesPath);
+        if (trainSize == 0) {
+            return Result.errorMsg("藻类慢性毒性训练集数据dragon转换出错！");
+        }
+        if (vldSize == 0) {
+            return Result.errorMsg("藻类慢性毒性验证集数据dragon转换出错！");
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("trainSize", trainSize);
+        resultMap.put("vldSize", vldSize);
+        return Result.success(resultMap);
+    }
+
+    /*************************************************** mol->描述符 ****************************************************/
+    @RequestMapping("/algchr/moldestrains")
+    public Result getTrainTxtFiles() {
+        int trainSize = algalChronicService.molFilesToDragonOutFiles(trainMolFilesPath, trainDragonOutFilesPath);
+        if (trainSize == 0) {
+            return Result.errorMsg("藻类慢性毒性训练集数据dragon转换出错！");
+        }
+        return Result.success(trainSize);
+    }
+    @RequestMapping("/algchr/moldesvlds")
+    public Result getVldTxtFiles() {
+        int vldSize = algalChronicService.molFilesToDragonOutFiles(vldMolFilesPath, vldDragonOutFilesPath);
+        if (vldSize == 0) {
+            return Result.errorMsg("藻类慢性毒性验证集数据dragon转换出错！");
+        }
+        return Result.success(vldSize);
+    }
+
+    @RequestMapping("/algchr/moldesfiles")
+    public Result getTxtFiles() {
+        int trainSize = algalChronicService.molFilesToDragonOutFiles(trainMolFilesPath, trainDragonOutFilesPath);
+        int vldSize = algalChronicService.molFilesToDragonOutFiles(vldMolFilesPath, vldDragonOutFilesPath);
         if (trainSize == 0) {
             return Result.errorMsg("藻类慢性毒性训练集数据dragon转换出错！");
         }
