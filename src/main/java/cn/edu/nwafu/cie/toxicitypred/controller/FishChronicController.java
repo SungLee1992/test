@@ -195,15 +195,13 @@ public class FishChronicController {
 
     @RequestMapping("/fishchr/trainasvldcsv")
     public Result getTrainAsVldCSV() {
-        File trainDesFile = new File(trainAsVldDesFilePath);
-        int trainSize = fishChronicService.getDesFile(trainDesFile, "train");
-        if (trainSize == 0) {
+        try {
+            File trainAsVldDesFile = fishChronicService.getTrainAsVldCSV(trainAsVldDesFilePath,trainDesFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
             return Result.errorMsg("鱼类慢性毒性训练集数据在转为csv文件时出错！");
         }
-
-        HashMap<String, Object> resultMap = new HashMap<>();
-        resultMap.put("trainSize", trainSize);
-        return Result.success(resultMap);
+        return Result.successWithoutData();
     }
 
     /*************************************************** 数据预处理已全部完成，训练集503，验证集127，只剩knn ****************************************************/

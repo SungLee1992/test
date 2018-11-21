@@ -53,7 +53,7 @@ public class DaphniaChronicService extends BaseService<DaphniaChronic> {
         sb.append(daphniaChronic.getSpmaxEari() + ",");
         sb.append(daphniaChronic.getMor04s() + ",");
         sb.append(daphniaChronic.getSm02Aeadm() + ",");
-        sb.append(daphniaChronic.getRdf075s() + ",");
+        sb.append(daphniaChronic.getRdf075s());
         sb.append("train".equals(dataType) ? "," + daphniaChronic.getExpValue() : "");
         sb.append("\n");
         return sb.toString();

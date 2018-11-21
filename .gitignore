@@ -3,5 +3,7 @@ files/mopfiles
 files/outfiles
 files/dragonoutfiles
 files/smifiles
+files/molfiles
 logs
 target
+toxicitypred.iml

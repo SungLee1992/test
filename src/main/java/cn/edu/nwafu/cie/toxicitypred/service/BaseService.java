@@ -63,7 +63,7 @@ public abstract class BaseService<T> {
         return casNo;
     }
 
-    public List<T> getByDataType(String dataType){
+    public List<T> getByDataType(String dataType) {
         return baseDao.getByDataType(dataType);
     }
 
@@ -565,7 +565,7 @@ public abstract class BaseService<T> {
         File files[] = new File(desDir).listFiles();
         //批量更新
         for (File desFile : files) {
-            if (updateDescription(desFile, clazz,dataType)) {
+            if (updateDescription(desFile, clazz, dataType)) {
                 numOfUpdateDes++;
             }
         }
@@ -581,7 +581,7 @@ public abstract class BaseService<T> {
     public boolean updateDescription(File desFile, Class<T> clazz, String dataType) {
         try {
             //得到描述符至实体中
-            t = getDescription(desFile,clazz);
+            t = getDescription(desFile, clazz);
             // 设置dataType
             //Class clazz = t.getClass();
             Field dataTypeField = clazz.getDeclaredField("datatype");
@@ -622,6 +622,35 @@ public abstract class BaseService<T> {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param trainAsVldDesFilePath
+     * @param trainFilePath
+     * @return: java.io.File
+     * @description: 训练集作为测试集进行knn
+     */
+    public File getTrainAsVldCSV(String trainAsVldDesFilePath, String trainFilePath) throws Exception {
+        File trainAsVldDesFile = new File(trainAsVldDesFilePath);
+        File trainDesFile = new File(trainFilePath);
+
+        BufferedReader br = new BufferedReader(new FileReader(trainDesFile));
+        StringBuffer sb = new StringBuffer();
+        String str = null;
+        while ((str = br.readLine()) != null) {
+            str = str.substring(0, str.lastIndexOf(","));
+            sb.append(str + "\n");
+        }
+
+        // write string to file
+        FileWriter writer = new FileWriter(trainAsVldDesFile);
+        BufferedWriter bw = new BufferedWriter(writer);
+        bw.write(sb.toString());
+
+        br.close();
+        bw.close();
+        writer.close();
+        return trainAsVldDesFile;
     }
 
     public abstract String creatDescription(Object t, String dataType);

@@ -65,7 +65,7 @@ public class AlgalChronicService extends BaseService<AlgalChronic> {
         sb.append(algalChronic.getGats5i() + ",");
         sb.append(algalChronic.getMor15s() + ",");
         sb.append(algalChronic.getLogkow() + ",");
-        sb.append(algalChronic.getAts6m() + ",");
+        sb.append(algalChronic.getAts6m());
         sb.append("train".equals(dataType) ? "," + algalChronic.getExpValue() : "");
         sb.append("\n");
         return sb.toString();

@@ -87,9 +87,9 @@ public class CommandConstant {
         return cmd;
     }
 
-    /* openbabel-out文件生成smi文件的命令*/
-    public static String outFileToMolFileCmd(String outFile, String smiDir,String casNo){
-        String cmd = "obabel "+outFile+" -O "+smiDir+"/"+casNo+".mol --gen3d";  //-xn表示在生成的文件中去掉文件路径
+    /* openbabel-out文件生成mol文件的命令*/
+    public static String outFileToMolFileCmd(String outFile, String molDir,String casNo){
+        String cmd = "obabel "+outFile+" -O "+molDir+"/"+casNo+".mol --gen3d";  //-xn表示在生成的文件中去掉文件路径
         System.out.println(cmd);
         return cmd;
     }

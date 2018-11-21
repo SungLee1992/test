@@ -2,8 +2,10 @@ package cn.edu.nwafu.cie.toxicitypred.controller;
 
 import cn.edu.nwafu.cie.toxicitypred.common.Result;
 import cn.edu.nwafu.cie.toxicitypred.entities.AlgalChronic;
+import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute;
 import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.AlgalChronicService;
+import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,11 +48,20 @@ public class AlgalChronicController {
     /**
      * 藻类慢性毒性记录的描述符txt文件存放路径
      **/
-    private static String trainDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/trainfiles"; //smi文件路径（训练集）
-    private static String vldDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/vldfiles";  //smi文件路径（验证集）
+    private static String trainDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/trainfiles"; //txt文件路径（训练集）
+    private static String vldDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/vldfiles";  //txt文件路径（验证集）
 
     private static String trainDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/traindes.csv";
     private static String vldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/vlddes.csv";
+    private static String trainAsVldDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/trainasvlddes.csv";
+    /**
+     * 藻类慢性毒性记录新进文件存放路径
+     **/
+    private static String newMopFilesPath = System.getProperty("user.dir") + "/files/mopfiles/algalchronic/new/"; //mop文件路径（新进）
+    private static String newOutFilesPath = System.getProperty("user.dir") + "/files/outfiles/algalchronic/new/"; //out文件路径（新进）
+    private static String newMolFilesPath = System.getProperty("user.dir") + "/files/molfiles/algalchronic/new/"; //mol文件路径（新进）
+    private static String newDragonOutFilesPath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/new/"; //描述符文件路径（新进）
+    private static String newDesFilePath = System.getProperty("user.dir") + "/files/dragonoutfiles/algalchronic/newdes.csv";     //新记录的knn文件
 
     /*************************************************** smi->mop ****************************************************/
     /**
@@ -349,10 +361,102 @@ public class AlgalChronicController {
         return Result.success(resultMap);
     }
 
+    @RequestMapping("/algchr/trainasvldcsv")
+    public Result getTrainAsVldCSV() {
+        try {
+            File trainAsVldDesFile = algalChronicService.getTrainAsVldCSV(trainAsVldDesFilePath,trainDesFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.errorMsg("藻类慢性毒性训练集数据在转为csv文件时出错！");
+        }
+        return Result.successWithoutData();
+    }
+
+    @RequestMapping("/algchr/vldknn")
+    public Result vldKnnPre() {
+        File trainDesFile = new File(trainDesFilePath);
+        File vldDesFile = new File(vldDesFilePath);
+        Map<String, String> knnMap = algalChronicService.runKnn(trainDesFile, vldDesFile);
+        int numOfUpdatePreValues = 0;
+        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+            numOfUpdatePreValues += algalChronicService.updatePreValueByCasNo(entry.getKey(), entry.getValue(), "validate");
+        }
+        return Result.success(numOfUpdatePreValues);
+    }
+
+    @RequestMapping("/algchr/trainknn")
+    public Result trainKnnPre() {
+        File trainDesFile = new File(trainDesFilePath);
+        File trainAsVldDesFile = new File(trainAsVldDesFilePath);
+
+        Map<String, String> knnMap = algalChronicService.runKnn(trainDesFile, trainAsVldDesFile);
+        int numOfUpdatePreValues = 0;
+        for (Map.Entry<String, String> entry : knnMap.entrySet()) {
+            numOfUpdatePreValues += algalChronicService.updatePreValueByCasNo(entry.getKey(), entry.getValue(), "train");
+        }
+        return Result.success(numOfUpdatePreValues);
+    }
+
     /***************************************************新进化合物的处理方法****************************************************/
     @RequestMapping("/algalchr/knn")
     public Result pre(@RequestParam("casno") String casNo, @RequestParam("smiles") String smiles) throws Exception {
-        return Result.success(null);// TODO
+        List<AlgalChronic> algalChronicList = algalChronicService.getByCasNo(casNo);
+        /*if (daphniaAcuteList != null) {
+            return Result.success(daphniaAcuteList.get(0));
+        }*/
+        if (!FileUtil.validateDir(newMopFilesPath)) {
+            return Result.errorMsg("新化合物的mop文件存储目录错误！");
+        }
+        if (!FileUtil.validateDir(newOutFilesPath)) {
+            return Result.errorMsg("新化合物的out文件存储目录错误！");
+        }
+        if (!FileUtil.validateDir(newMolFilesPath)) {
+            return Result.errorMsg("新化合物的mol文件存储目录错误！");
+        }
+        if (!FileUtil.validateDir(newDragonOutFilesPath)) {
+            return Result.errorMsg("新化合物的描述符文件存储目录错误！");
+        }
+        //进入OpenBabel，生成mop文件
+        boolean flag = algalChronicService.smiStrToMopFile(newMopFilesPath,smiles,casNo);
+        if (!flag) {
+            return Result.errorMsg("OpenBabel生成mop文件出错！");
+        }
+        //进入Mopac，生成out文件
+        File newMopFile = new File(newMopFilesPath + casNo + ".mop");
+        flag = algalChronicService.mopFileToOutFile(newMopFile);
+        int moveSize = algalChronicService.moveOutFiles(newMopFilesPath, newOutFilesPath);     //把生成的out文件及附属文件移动到新out目录中
+        if(!flag || moveSize<1){
+            return Result.errorMsg("Mopac计算出错！");
+        }
+        //进入Openbabel，生成mol文件
+        File newOutFile = new File(newOutFilesPath + casNo + ".out");
+        flag = algalChronicService.outFileToMolFile(newOutFile,newMolFilesPath);
+        if(!flag){
+            return Result.errorMsg("OpenBabel生成mol文件出错!");
+        }
+        //mol文件进入dragon，生成txt文件
+        File newMolFile = new File(newMolFilesPath + casNo + ".mol");
+        flag = algalChronicService.molFileToDragonOutFile(newMolFile,newDragonOutFilesPath);
+        if(!flag){
+            return Result.errorMsg("dragon生成描述符文件出错!");
+        }
+        //提取描述符到实体中
+        AlgalChronic newAlgalChronic =null;
+        File newDragonOutFile = new File(newDragonOutFilesPath + casNo + ".txt");
+        newAlgalChronic = algalChronicService.getDescription(newDragonOutFile, AlgalChronic.class);
+        newAlgalChronic.setDatatype("new");
+        newAlgalChronic.setSmiles(smiles);
+        //构造用于knn的新csv文件
+        flag = algalChronicService.getDesFile(new File(newDesFilePath), newAlgalChronic);
+        if(!flag){
+            return Result.errorMsg("生成csv文件时出错！");
+        }
+        //knn
+        Map<String, String> knnMap = algalChronicService.runKnn(new File(trainDesFilePath), new File(newDesFilePath));
+        newAlgalChronic.setPreValue(knnMap.get(casNo));
+        //新纪录插入至数据库
+        algalChronicService.insert(newAlgalChronic);
+        return Result.success(newAlgalChronic);
     }
 
 }
