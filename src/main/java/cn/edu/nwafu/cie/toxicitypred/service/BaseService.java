@@ -462,6 +462,15 @@ public abstract class BaseService<T> {
         map.put("spmaxaEadm", "SpMaxA_EA(dm)");
         map.put("mpc07", "MPC07");
         map.put("cats2d05Ll", "CATS2D_05_LL");
+        //60条新纪录描述符
+        map.put("hats2e", "HATS2e");
+        map.put("pw3", "PW3");
+        map.put("homa", "HOMA");
+        map.put("rdf035u", "RDF035u");
+        map.put("nrct", "nR=Ct");
+        map.put("h050", "H-050");
+        map.put("nrcs", "nR=Cs");
+        map.put("g1s", "G1s");
     }
 
     /**
@@ -538,7 +547,7 @@ public abstract class BaseService<T> {
             // 取描述符的值
             String value = contentAry[titleList.indexOf(map.get(field.getName()))];
             if ("NA".equalsIgnoreCase(value)) {
-                field.set(t, -1d);
+                field.set(t, null);
             } else {
                 field.set(t, Double.parseDouble(value));
             }
@@ -582,11 +591,12 @@ public abstract class BaseService<T> {
         try {
             //得到描述符至实体中
             t = getDescription(desFile, clazz);
-            // 设置dataType
-            //Class clazz = t.getClass();
-            Field dataTypeField = clazz.getDeclaredField("datatype");
-            dataTypeField.setAccessible(true);
-            dataTypeField.set(t, dataType);
+            if(dataType!=null){ // 设置dataType
+                //Class clazz = t.getClass();
+                Field dataTypeField = clazz.getDeclaredField("datatype");
+                dataTypeField.setAccessible(true);
+                dataTypeField.set(t, dataType);
+            }
             //更新
             return this.updateByCasNo(t) == 1;
         } catch (Exception e) {

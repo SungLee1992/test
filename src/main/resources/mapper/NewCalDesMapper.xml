@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.nwafu.cie.toxicitypred.dao.NewCalDesDao">
+  <resultMap id="BaseResultMap" type="cn.edu.nwafu.cie.toxicitypred.entities.NewCalDes">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cas_no" jdbcType="VARCHAR" property="casNo" />
+    <result column="smiles" jdbcType="VARCHAR" property="smiles" />
+    <result column="che_name" jdbcType="VARCHAR" property="cheName" />
+    <result column="hats2e" jdbcType="DOUBLE" property="hats2e" />
+    <result column="pw3" jdbcType="DOUBLE" property="pw3" />
+    <result column="homa" jdbcType="DOUBLE" property="homa" />
+    <result column="rdf035u" jdbcType="DOUBLE" property="rdf035u" />
+    <result column="nrct" jdbcType="DOUBLE" property="nrct" />
+    <result column="h050" jdbcType="DOUBLE" property="h050" />
+    <result column="nrcs" jdbcType="DOUBLE" property="nrcs" />
+    <result column="g1s" jdbcType="DOUBLE" property="g1s" />
+    <result column="experiment" jdbcType="VARCHAR" property="experiment" />
+    <result column="logk" jdbcType="VARCHAR" property="logk" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, cas_no, smiles, che_name, hats2e, pw3, homa, rdf035u, nrct, h050, nrcs, g1s, experiment,
+    logk
+  </sql>
+  <select id="getAll" resultMap="BaseResultMap">
+    select *
+    from newcaldes
+  </select>
+
+  <select id="getByCasNo" resultType="cn.edu.nwafu.cie.toxicitypred.entities.NewCalDes">
+    select
+    <include refid="Base_Column_List"/>
+    from newcaldes
+    where cas_no = #{casNo}
+  </select>
+
+  <update id="updateByCasNo" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.NewCalDes">
+    update newcaldes
+    <set>
+      <if test="smiles != null">
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="cheName != null">
+        che_name = #{cheName,jdbcType=VARCHAR},
+      </if>
+      <if test="hats2e != null">
+        hats2e = #{hats2e,jdbcType=DOUBLE},
+      </if>
+      <if test="pw3 != null">
+        pw3 = #{pw3,jdbcType=DOUBLE},
+      </if>
+      <if test="homa != null">
+        homa = #{homa,jdbcType=DOUBLE},
+      </if>
+      <if test="rdf035u != null">
+        rdf035u = #{rdf035u,jdbcType=DOUBLE},
+      </if>
+      <if test="nrct != null">
+        nrct = #{nrct,jdbcType=DOUBLE},
+      </if>
+      <if test="h050 != null">
+        h050 = #{h050,jdbcType=DOUBLE},
+      </if>
+      <if test="nrcs != null">
+        nrcs = #{nrcs,jdbcType=DOUBLE},
+      </if>
+      <if test="g1s != null">
+        g1s = #{g1s,jdbcType=DOUBLE},
+      </if>
+      <if test="experiment != null">
+        experiment = #{experiment,jdbcType=VARCHAR},
+      </if>
+      <if test="logk != null">
+        logk = #{logk,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where cas_no = #{casNo}
+  </update>
+
+</mapper>

@@ -7,3 +7,4 @@ files/molfiles
 logs
 target
 toxicitypred.iml
+src/resources/generatorConfig.xml
