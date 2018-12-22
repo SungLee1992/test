@@ -547,7 +547,8 @@ public abstract class BaseService<T> {
             // 取描述符的值
             String value = contentAry[titleList.indexOf(map.get(field.getName()))];
             if ("NA".equalsIgnoreCase(value)) {
-                field.set(t, null);
+                field.set(t, -1d);
+                //field.set(t, null);
             } else {
                 field.set(t, Double.parseDouble(value));
             }
