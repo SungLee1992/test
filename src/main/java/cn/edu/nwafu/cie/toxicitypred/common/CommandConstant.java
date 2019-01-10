@@ -13,7 +13,7 @@ public class CommandConstant {
     private static File molInput = new File("D:\\nies\\Dragon 7\\data\\molinput.mol");
     private static String dragonTemplate = System.getProperty("user.dir") + "/files/dragontemplate.drs";
     private static String molDragonTemplate = System.getProperty("user.dir") + "/files/moldragontemplate.drs";
-    private static File dragonOutput = new File("D:\\nies\\Dragon 7\\data\\moldragonout.txt");
+    private static File dragonOutput = new File("D:\\nies\\Dragon 7\\data\\dragonout.txt");
 
     public static File getDragonInput() {
         return dragonInput;
