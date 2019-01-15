@@ -6,7 +6,7 @@
     <groupId>cn.edu.nwafu.cie</groupId>
     <artifactId>toxicitypred</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>toxicitypred</name>
     <description>toxicitypred</description>
@@ -25,6 +25,11 @@
     </properties>
 
     <dependencies>
+        <!--打war包需要-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
         <!--Spring Boot相关-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -40,6 +45,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <!--排除自带tomcat依赖，打war包需要-->
+            <!--<exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>-->
             <!--排除自带的log依赖-->
             <!--<exclusions>
                 <exclusion>
@@ -101,6 +113,24 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!--如果想在没有web.xml文件的情况下构建WAR，请设置为false-->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <!--设置war包的名字-->
+                    <warName>toxicitypred</warName>
+                </configuration>
+            </plugin>
+
+            <!-- 让打包的时候跳过测试代码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
             <!--<plugin>
                 &lt;!&ndash;Mybatis-generator插件,用于自动生成Mapper和POJO&ndash;&gt;

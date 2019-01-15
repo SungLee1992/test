@@ -47,7 +47,7 @@
   </OPTIONS>
   <MOLFILES>
     <molInput value="file"/>
-    <molFile value="D:\nies\Dragon 7\data\dragoninput.smi"/>
+    <molFile value="D:\toxicitypred\data\dragoninput.smi"/>
   </MOLFILES>
   <DESCRIPTORS>
     <block id="1" SelectAll="true"/>
@@ -87,7 +87,7 @@
     <SaveProject value="false"/>
     <SaveFile value="true"/>
     <SaveType value="singlefile"/>
-    <SaveFilePath value="D:\nies\Dragon 7\data\dragonout.txt"/>
+    <SaveFilePath value="D:\toxicitypred\data\dragonout.txt"/>
     <logMode value="none"/>
   </OUTPUT>
 </DRAGON>

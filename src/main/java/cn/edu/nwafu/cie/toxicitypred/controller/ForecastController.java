@@ -7,10 +7,9 @@ import cn.edu.nwafu.cie.toxicitypred.dao.DaphniaAcuteDao;
 import cn.edu.nwafu.cie.toxicitypred.dao.DaphniaChronicDao;
 import cn.edu.nwafu.cie.toxicitypred.dao.FishChronicDao;
 import cn.edu.nwafu.cie.toxicitypred.entities.*;
-import cn.edu.nwafu.cie.toxicitypred.service.AlgalChronicService;
-import cn.edu.nwafu.cie.toxicitypred.service.DaphniaAcuteService;
-import cn.edu.nwafu.cie.toxicitypred.service.DaphniaChronicService;
-import cn.edu.nwafu.cie.toxicitypred.service.FishChronicService;
+import cn.edu.nwafu.cie.toxicitypred.service.*;
+import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
+import org.apache.ibatis.javassist.bytecode.stackmap.BasicBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +58,27 @@ public class ForecastController {
     @Autowired
     private DaphniaAcuteController daphniaAcuteController;
 
+    @RequestMapping("/batchpre")
+    public Result batchPre() {
+        try {
+            List<ArrayList<String>> rows = FileUtil.poiReadXExcel("D:\\toxicitypred\\files\\162.xlsx");
+            String[] typeAry = new String[]{"1", "2", "3", "4"};   //四种毒性都预测
+            for (ArrayList<String> row : rows) {
+                String casNo = row.get(0).trim();
+                String smiles = row.get(1).trim();
+                if (!(smiles.equals("") || smiles == null)) {   //剔除没有smiles的记录
+                    Result result = this.toxityPred(typeAry, casNo, smiles);
+                    if (result.getStatus() != 200) {
+                        System.out.println("化合物" + casNo + "预测出错！");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.errorMsg("批量预测出错");
+        }
+        return Result.successWithoutData();
+    }
 
     @RequestMapping("/pre")
     public Result toxityPred(@RequestParam("type") String[] typeAry, @RequestParam("casNo") String casNo, @RequestParam("smiles") String smiles) throws IOException, NoSuchFieldException, InstantiationException, IllegalAccessException {

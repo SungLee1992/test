@@ -9,11 +9,13 @@ import java.io.File;
  */
 public class CommandConstant {
 
-    private static File dragonInput = new File("D:\\nies\\Dragon 7\\data\\dragoninput.smi");
-    private static File molInput = new File("D:\\nies\\Dragon 7\\data\\molinput.mol");
+    //private static File dragonInput = new File("D:\\nies\\Dragon 7\\data\\dragoninput.smi");
+    private static File dragonInput = new File("D:\\toxicitypred\\data\\dragoninput.smi");
+    //private static File molInput = new File("D:\\nies\\Dragon 7\\data\\molinput.mol");
+    private static File molInput = new File("D:\\toxicitypred\\data\\molinput.mol");
     private static String dragonTemplate = System.getProperty("user.dir") + "/files/dragontemplate.drs";
     private static String molDragonTemplate = System.getProperty("user.dir") + "/files/moldragontemplate.drs";
-    private static File dragonOutput = new File("D:\\nies\\Dragon 7\\data\\dragonout.txt");
+    private static File dragonOutput = new File("D:\\toxicitypred\\data\\dragonout.txt");
 
     public static File getDragonInput() {
         return dragonInput;

@@ -140,24 +140,24 @@ public class FileUtil {
     public static List<ArrayList<String>> poiReadXExcel(String file) throws FileNotFoundException, IOException {
         FileInputStream input = new FileInputStream(new File(file)); //读取的文件路径
         XSSFWorkbook wb = new XSSFWorkbook(new BufferedInputStream(input));
-        XSSFSheet sheet = wb.getSheetAt(1); //获取第一张表
+        XSSFSheet sheet = wb.getSheetAt(0); //获取第一张表
 
         int rowNum = sheet.getPhysicalNumberOfRows();//得到数据的行数
         System.out.println("行数：" + rowNum);
         strLists.clear();
 
         //遍历行
-        for (int i = 0; i < rowNum; i++) //Excel从第4行开始有数据
+        for (int i = 1; i < rowNum; i++) //Excel从第1行开始有数据
         {
             List<String> strList = new ArrayList<String>();
             XSSFRow row = sheet.getRow(i);
             int colNum = row.getPhysicalNumberOfCells();//得到当前行中存在数据的列数
-            //遍历列
-            for (int j = 0; j < colNum; j++) {
+            //遍历列（遍历前两列）
+            for (int j = 0; j < 2; j++) {
                 XSSFCell cell = row.getCell(j);
                 strList.add(getXCellVal(cell));
             }
-            strLists.add(i, (ArrayList<String>) strList); //存储该行
+            strLists.add(i-1, (ArrayList<String>) strList); //存储该行
         }
 
         //打印
