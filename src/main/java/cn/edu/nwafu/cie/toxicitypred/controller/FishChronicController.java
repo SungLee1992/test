@@ -4,6 +4,8 @@ import cn.edu.nwafu.cie.toxicitypred.common.Result;
 import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.FishChronicService;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +23,8 @@ import java.util.Map;
  */
 @RestController
 public class FishChronicController {
+    private static final Logger logger = LoggerFactory.getLogger(FishChronicController.class);
+
     @Autowired
     private FishChronicService fishChronicService;
     /**
@@ -247,12 +251,14 @@ public class FishChronicController {
         File newSmiFile = new File(newSmiFilesPath + casNo + ".smi");
         boolean flag = fishChronicService.writeFile(newSmiFile, smiles, false);
         if (!flag) {
-            return Result.errorMsg("生成smi文件出错！");
+            logger.error(casNo+"生成smi文件出错！");
+            return null;
         }
         //进入dragon，转为描述符文件
         flag = fishChronicService.smiFileToDragonOutFile(newSmiFile, newDragonOutFilesPath);
         if(!flag){
-            return Result.errorMsg("dragon计算出错！");
+            logger.error(casNo+" dragon生成描述符文件出错!");
+            return null;
         }
         //提取描述符到实体中
         FishChronic newFishChronic = null;

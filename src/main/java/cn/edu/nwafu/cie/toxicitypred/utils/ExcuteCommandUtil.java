@@ -1,5 +1,9 @@
 package cn.edu.nwafu.cie.toxicitypred.utils;
 
+import cn.edu.nwafu.cie.toxicitypred.service.BaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 /**
@@ -17,6 +21,8 @@ public class ExcuteCommandUtil {
     private static OutputStream outStream;    //用以向子进程提供标准输入
     private static BufferedWriter outWriter;    //缓冲向子进程的输入
     private static String result;
+
+    private static final Logger logger = LoggerFactory.getLogger(ExcuteCommandUtil.class);
 
     /**
      * @param command
@@ -61,6 +67,14 @@ public class ExcuteCommandUtil {
             System.out.println("--------------------------------------------提示信息 start--------------------------------------------------");
             while ((result = errReader.readLine()) != null) {
                 System.out.println(result);
+                if(result.contains("0 molecules converted")){
+                    logger.error("OpenBabel 出错！");
+                    return false;
+                }
+                if(result.contains("Errors encountered during execution of Dragon")){
+                    logger.error("Dragon 出错！");
+                    return false;
+                }
             }
             System.out.println("--------------------------------------------提示信息 end---------------------------------------------------");
 

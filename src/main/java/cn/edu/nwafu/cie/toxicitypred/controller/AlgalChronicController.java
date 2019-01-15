@@ -6,6 +6,8 @@ import cn.edu.nwafu.cie.toxicitypred.entities.DaphniaAcute;
 import cn.edu.nwafu.cie.toxicitypred.entities.FishChronic;
 import cn.edu.nwafu.cie.toxicitypred.service.AlgalChronicService;
 import cn.edu.nwafu.cie.toxicitypred.utils.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +25,7 @@ import java.util.Map;
  */
 @RestController
 public class AlgalChronicController {
+    private static final Logger logger = LoggerFactory.getLogger(AlgalChronicController.class);
     @Autowired
     private AlgalChronicService algalChronicService;
     /**
@@ -419,26 +422,30 @@ public class AlgalChronicController {
         //进入OpenBabel，生成mop文件
         boolean flag = algalChronicService.smiStrToMopFile(newMopFilesPath,smiles,casNo);
         if (!flag) {
-            return Result.errorMsg("OpenBabel生成mop文件出错！");
+            logger.error(casNo+" OpenBabel生成mop文件出错！");
+            return null;
         }
         //进入Mopac，生成out文件
         File newMopFile = new File(newMopFilesPath + casNo + ".mop");
         flag = algalChronicService.mopFileToOutFile(newMopFile);
         int moveSize = algalChronicService.moveOutFiles(newMopFilesPath, newOutFilesPath);     //把生成的out文件及附属文件移动到新out目录中
         if(!flag || moveSize<1){
-            return Result.errorMsg("Mopac计算出错！");
+            logger.error(casNo+" Mopac计算出错！");
+            return null;
         }
         //进入Openbabel，生成mol文件
         File newOutFile = new File(newOutFilesPath + casNo + ".out");
         flag = algalChronicService.outFileToMolFile(newOutFile,newMolFilesPath);
         if(!flag){
-            return Result.errorMsg("OpenBabel生成mol文件出错!");
+            logger.error(casNo+" OpenBabel生成mol文件出错!");
+            return null;
         }
         //mol文件进入dragon，生成txt文件
         File newMolFile = new File(newMolFilesPath + casNo + ".mol");
         flag = algalChronicService.molFileToDragonOutFile(newMolFile,newDragonOutFilesPath);
         if(!flag){
-            return Result.errorMsg("dragon生成描述符文件出错!");
+            logger.error(casNo+" dragon生成描述符文件出错!");
+            return null;
         }
         //提取描述符到实体中
         AlgalChronic newAlgalChronic =null;
