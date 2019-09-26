@@ -466,4 +466,12 @@ public class AlgalChronicController {
         return Result.success(newAlgalChronic);
     }
 
+    @RequestMapping("/algalchr/calculator")
+    public Result calculate() throws Exception {
+        HashMap<String,Object> modelMap = new HashMap<>();
+        modelMap.put("trainModel",algalChronicService.calculateModel("train"));
+        modelMap.put("validateModel",algalChronicService.calculateModel("validate"));
+        return Result.success(modelMap);
+    }
+
 }

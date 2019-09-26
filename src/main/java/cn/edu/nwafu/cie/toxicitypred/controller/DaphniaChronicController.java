@@ -459,4 +459,12 @@ public class DaphniaChronicController {
         return Result.success(newDaphniaChronic);
     }
 
+    @RequestMapping("/dapchr/calculator")
+    public Result calculate() throws Exception {
+        HashMap<String,Object> modelMap = new HashMap<>();
+        modelMap.put("trainModel",daphniaChronicService.calculateModel("train"));
+        modelMap.put("validateModel",daphniaChronicService.calculateModel("validate"));
+        return Result.success(modelMap);
+    }
+
 }

@@ -1,7 +1,9 @@
 package cn.edu.nwafu.cie.toxicitypred.dao;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -69,4 +71,15 @@ public interface BaseDao<T> {
      * 根据casNo更新预测值
      */
     public int updatePreValueByCasNo(@Param("casNo") String casNo, @Param("preValue") String preValue, @Param("dataType") String dataType);
+
+    /**
+     * 返回TN，TP，FN，FP的map
+     */
+    /*@Select("select\n" +
+            "    sum(if(exp_value=1 and pre_value=1,1,0)) as tp,\n" +
+            "    sum(if(exp_value=0 and pre_value=0,1,0)) as tn,\n" +
+            "    sum(if(exp_value=1 and pre_value=0,1,0)) as fn,\n" +
+            "    sum(if(exp_value=0 and pre_value=1,1,0)) as fp\n" +
+            "    from anaerobic_digestion")*/
+    public HashMap<String,Object> getTAndF(String dataType);
 }

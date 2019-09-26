@@ -234,9 +234,18 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-    <update id="updatePreValueByCasNo" parameterType="string">
-        update daphnia_acute
-        set pre_value = #{preValue,jdbcType=VARCHAR}
-        where cas_no = #{casNo,jdbcType=VARCHAR} and datatype = #{dataType,jdbcType=VARCHAR}
-    </update>
+  <update id="updatePreValueByCasNo" parameterType="string">
+    update daphnia_acute
+    set pre_value = #{preValue,jdbcType=VARCHAR}
+    where cas_no = #{casNo,jdbcType=VARCHAR} and datatype = #{dataType,jdbcType=VARCHAR}
+  </update>
+  <select id="getTAndF" resultType="Map" parameterType="string">
+      select
+      sum(if(exp_value=1 and pre_value=1 ,1,0)) as TP,
+      sum(if(exp_value=0 and pre_value=0 ,1,0)) as TN,
+      sum(if(exp_value=1 and pre_value=0 ,1,0)) as FN,
+      sum(if(exp_value=0 and pre_value=1 ,1,0)) as FP,
+      sum(if(datatype=#{dataType,jdbcType=VARCHAR},1,0)) as nums
+      from (select <include refid="Base_Column_List"/> from daphnia_acute where datatype=#{dataType,jdbcType=VARCHAR}) as newtable
+  </select>
 </mapper>

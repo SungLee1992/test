@@ -477,4 +477,13 @@ public class AnaerobicDigestionController {
         anaerobicDigestionService.insert(anaerobicDigestion);
         return Result.success(anaerobicDigestion);
     }
+
+    @RequestMapping("/ad/calculator")
+    public Result calculate() throws Exception {
+        HashMap<String,Object> modelMap = new HashMap<>();
+        modelMap.put("trainModel",anaerobicDigestionService.calculateModel("train"));
+        modelMap.put("validateModel",anaerobicDigestionService.calculateModel("validate"));
+        return Result.success(modelMap);
+    }
+
 }

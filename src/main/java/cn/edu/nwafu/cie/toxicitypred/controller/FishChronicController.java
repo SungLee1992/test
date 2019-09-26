@@ -278,4 +278,12 @@ public class FishChronicController {
         fishChronicService.insert(newFishChronic);
         return Result.success(newFishChronic);
     }
+
+    @RequestMapping("/fishchr/calculator")
+    public Result calculate() throws Exception {
+        HashMap<String,Object> modelMap = new HashMap<>();
+        modelMap.put("trainModel",fishChronicService.calculateModel("train"));
+        modelMap.put("validateModel",fishChronicService.calculateModel("validate"));
+        return Result.success(modelMap);
+    }
 }

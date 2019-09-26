@@ -253,4 +253,12 @@ public class DaphniaAcuteController {
         daphniaAcuteService.insert(newDaphniaAcute);
         return Result.success(newDaphniaAcute);
     }
+
+    @RequestMapping("/dapact/calculator")
+    public Result calculate() throws Exception {
+        HashMap<String,Object> modelMap = new HashMap<>();
+        modelMap.put("trainModel",daphniaAcuteService.calculateModel("train"));
+        modelMap.put("validateModel",daphniaAcuteService.calculateModel("validate"));
+        return Result.success(modelMap);
+    }
 }

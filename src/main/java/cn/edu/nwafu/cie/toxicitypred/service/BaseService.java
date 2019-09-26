@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -671,4 +672,34 @@ public abstract class BaseService<T> {
 
     public abstract String creatDescription(Object t, String dataType);
 
+    /**
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @description: 得到TP/TN/FP/FN并计算Q，Sn，Sp，一并返回Map
+     */
+    public Map<String,Object> calculateModel(String dataType){
+        if(!(dataType.equals("train") || dataType.equals("validate"))){
+            return null;
+        }
+        HashMap<String,Object> modelMap = baseDao.getTAndF(dataType);
+        int TP = Integer.parseInt(modelMap.get("TP").toString());
+        int TN = Integer.parseInt(modelMap.get("TN").toString());
+        int FP = Integer.parseInt(modelMap.get("FP").toString());
+        int FN = Integer.parseInt(modelMap.get("FN").toString());
+
+        DecimalFormat df = new DecimalFormat("#0.0000");
+        //计算准确度
+        double Q = Double.parseDouble(df.format((double) (TP+TN)/(TP+TN+FP+FN)));
+        //计算敏感性
+        double Sn = Double.parseDouble(df.format((double) TP/(TP+FN)));
+        //计算特异性
+        double Sp =  Double.parseDouble(df.format((double) TN/(TN+FP)));
+        modelMap.put("Q",Q);
+        modelMap.put("Sn",Sn);
+        modelMap.put("Sp",Sp);
+
+        //加入训练集或验证集的前缀，以示区分
+        modelMap.put(dataType+"_nums",modelMap.get("nums"));
+        modelMap.remove("nums");
+        return modelMap;
+    }
 }

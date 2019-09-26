@@ -76,4 +76,14 @@
     where cas_no = #{casNo}
   </update>
 
+  <select id="getTAndF" resultType="Map" parameterType="string">
+    select
+    sum(if(exp_value=1 and pre_value=1 ,1,0)) as TP,
+    sum(if(exp_value=0 and pre_value=0 ,1,0)) as TN,
+    sum(if(exp_value=1 and pre_value=0 ,1,0)) as FN,
+    sum(if(exp_value=0 and pre_value=1 ,1,0)) as FP,
+    sum(if(datatype=#{dataType,jdbcType=VARCHAR},1,0)) as nums
+    from (select <include refid="Base_Column_List"/> from newcaldes where datatype=#{dataType,jdbcType=VARCHAR}) as newtable
+  </select>
+
 </mapper>

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+
 
 /**
  * @author: SungLee
@@ -98,4 +100,11 @@ public class NewCalDesController {
         return Result.success(trainUpdateSize);
     }
 
+    @RequestMapping("/newcaldes/calculator")
+    public Result calculate() throws Exception {
+        HashMap<String,Object> modelMap = new HashMap<>();
+        modelMap.put("trainModel",newCalDesService.calculateModel("train"));
+        modelMap.put("validateModel",newCalDesService.calculateModel("validate"));
+        return Result.success(modelMap);
+    }
 }
