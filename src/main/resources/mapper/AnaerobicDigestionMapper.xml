@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nwafu.cie.toxicitypred.dao.AnaerobicDigestionDao" >
+  <resultMap id="BaseResultMap" type="cn.edu.nwafu.cie.toxicitypred.entities.AnaerobicDigestion" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cas_no" property="casNo" jdbcType="VARCHAR" />
+    <result column="smiles" property="smiles" jdbcType="VARCHAR" />
+    <result column="DISPm" property="dISPm" jdbcType="DOUBLE" />
+    <result column="Mor15m" property="mor15m" jdbcType="DOUBLE" />
+    <result column="HATSe" property="hATSe" jdbcType="DOUBLE" />
+    <result column="O_060" property="o060" jdbcType="DOUBLE" />
+    <result column="removal_rate" property="removalRate" jdbcType="VARCHAR" />
+    <result column="exp_value" property="expValue" jdbcType="VARCHAR" />
+    <result column="pre_value" property="preValue" jdbcType="VARCHAR" />
+    <result column="datatype" property="datatype" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cas_no, smiles, DISPm, Mor15m, HATSe,O_060,removal_rate,exp_value, pre_value,
+    datatype
+  </sql>
+  <select id="getByDataType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from anaerobic_digestion
+    where datatype  = #{dataType}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from anaerobic_digestion
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getByCasNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from anaerobic_digestion
+    where cas_no = #{casNo}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from anaerobic_digestion
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertRecord" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AnaerobicDigestion" >
+    insert into anaerobic_digestion (id, cas_no, smiles,
+      DISPm, Mor15m, HATSe, O_060, removal_rate, exp_value, pre_value,
+      datatype)
+    values (#{id,jdbcType=INTEGER}, #{casNo,jdbcType=VARCHAR}, #{smiles,jdbcType=VARCHAR}, 
+      #{DISPm,jdbcType=DOUBLE}, #{Mor15m,jdbcType=DOUBLE}, #{HATSe,jdbcType=DOUBLE},, #{O_060,jdbcType=DOUBLE},#{removal_rate,jdbcType=DOUBLE},
+      #{expValue,jdbcType=VARCHAR}, #{preValue,jdbcType=VARCHAR}, #{datatype,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AnaerobicDigestion" >
+    insert into anaerobic_digestion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="casNo != null" >
+        cas_no,
+      </if>
+      <if test="smiles != null" >
+        smiles,
+      </if>
+      <if test="dISPm != null" >
+        DISPm,
+      </if>
+      <if test="mor15m != null" >
+        Mor15m,
+      </if>
+      <if test="hATSe != null" >
+        HATSe,
+      </if>
+      <if test="o060 != null" >
+        O_060,
+      </if>
+      <if test="removalRate != null" >
+        removal_rate,
+      </if>
+      <if test="expValue != null" >
+        exp_value,
+      </if>
+      <if test="preValue != null" >
+        pre_value,
+      </if>
+      <if test="datatype != null" >
+        datatype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="casNo != null" >
+        #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="dISPm != null" >
+        #{dISPm,jdbcType=DOUBLE},
+      </if>
+      <if test="mor15m != null" >
+        #{mor15m,jdbcType=DOUBLE},
+      </if>
+      <if test="hATSe != null" >
+        #{hATSe,jdbcType=DOUBLE},
+      </if>
+      <if test="o060 != null" >
+        #{o060,jdbcType=DOUBLE},
+      </if>
+      <if test="removalRate != null" >
+        #{removalRate,jdbcType=DOUBLE},
+      </if>
+      <if test="expValue != null" >
+        #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        #{datatype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AnaerobicDigestion" >
+    update anaerobic_digestion
+    <set >
+      <if test="casNo != null" >
+        cas_no = #{casNo,jdbcType=VARCHAR},
+      </if>
+      <if test="smiles != null" >
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="dISPm != null" >
+        DISPm = #{dISPm,jdbcType=DOUBLE},
+      </if>
+      <if test="mor15m != null" >
+        Mor15m = #{mor15m,jdbcType=DOUBLE},
+      </if>
+      <if test="hATSe != null" >
+        HATSe = #{hATSe,jdbcType=DOUBLE},
+      </if>
+      <if test="o060 != null" >
+        O_060 = #{o060,jdbcType=DOUBLE},
+      </if>
+      <if test="removalRate != null" >
+        removal_rate = #{removalRate,jdbcType=DOUBLE},
+      </if>
+      <if test="expValue != null" >
+        exp_value = #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        pre_value = #{preValue,jdbcType=VARCHAR},
+      </if>
+      <if test="datatype != null" >
+        datatype = #{datatype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByCasNo" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AnaerobicDigestion" >
+    update anaerobic_digestion
+    <set >
+      <if test="smiles != null" >
+        smiles = #{smiles,jdbcType=VARCHAR},
+      </if>
+      <if test="dISPm != null" >
+        DISPm = #{dISPm,jdbcType=DOUBLE},
+      </if>
+      <if test="mor15m != null" >
+        Mor15m = #{mor15m,jdbcType=DOUBLE},
+      </if>
+      <if test="hATSe != null" >
+        HATSe = #{hATSe,jdbcType=DOUBLE},
+      </if>
+      <if test="o060 != null" >
+        O_060 = #{o060,jdbcType=DOUBLE},
+      </if>
+      <if test="removalRate != null" >
+        removal_rate = #{removalRate,jdbcType=DOUBLE},
+      </if>
+      <if test="expValue != null" >
+        exp_value = #{expValue,jdbcType=VARCHAR},
+      </if>
+      <if test="preValue != null" >
+        pre_value = #{preValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where cas_no = #{casNo} and datatype = #{datatype}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.AnaerobicDigestion" >
+    update anaerobic_digestion
+    set cas_no = #{casNo,jdbcType=VARCHAR},
+      smiles = #{smiles,jdbcType=VARCHAR},
+      DISPm = #{dISPm,jdbcType=DOUBLE},
+      Mor15m = #{mor15m,jdbcType=DOUBLE},
+      HATSe = #{hATSe,jdbcType=DOUBLE},
+      O_060 = #{o060,jdbcType=DOUBLE},
+      removal_rate = #{removalRate,jdbcType=DOUBLE},
+      exp_value = #{expValue,jdbcType=VARCHAR},
+      pre_value = #{preValue,jdbcType=VARCHAR},
+      datatype = #{datatype,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updatePreValueByCasNo" parameterType="string">
+    update anaerobic_digestion
+    set pre_value = #{preValue,jdbcType=VARCHAR}
+    where cas_no = #{casNo,jdbcType=VARCHAR} and datatype = #{dataType,jdbcType=VARCHAR}
+  </update>
+</mapper>

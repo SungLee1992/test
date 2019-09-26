@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * @author: SungLee
  * @date: 2018-10-23 14:28
- * @description: 溞类急性毒性
+ * @description: 鱼类慢性毒性
  */
 @Service
 public class FishChronicService extends BaseService<FishChronic> {

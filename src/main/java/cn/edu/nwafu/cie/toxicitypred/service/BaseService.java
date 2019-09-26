@@ -471,6 +471,11 @@ public abstract class BaseService<T> {
         map.put("h050", "H-050");
         map.put("nrcs", "nR=Cs");
         map.put("g1s", "G1s");
+        // 厌氧消化型描述符
+        map.put("dISPm", "DISPm");
+        map.put("mor15m", "Mor15m");
+        map.put("hATSe", "HATSe");
+        map.put("o060", "O-060");
     }
 
     /**
