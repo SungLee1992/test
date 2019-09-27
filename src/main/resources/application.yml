@@ -91,3 +91,4 @@ pagehelper:
 #mapper_path=/mapper/**.xml
 #entity_package=cn.edu.nwafu.cie.toxicitypred.entities
 #mybatis_config_file=mybatis-config.xml
+

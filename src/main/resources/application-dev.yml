@@ -1,2 +1,8 @@
 server:
   port: 80
+#  tomcat:
+#    max-connections=0 # Maximum number of connections that the server accepts and processes at any given time.
+#    max-http-header-size=0 # Maximum size, in bytes, of the HTTP message header.
+#    max-http-post-size=0 # Maximum size, in bytes, of the HTTP post content.
+#    max-threads=0 # Maximum number of worker threads.
+#    min-spare-threads=0 # Minimum number of worker threads.

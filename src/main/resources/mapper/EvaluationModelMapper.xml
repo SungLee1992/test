@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.nwafu.cie.toxicitypred.dao.EvaluationModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.nwafu.cie.toxicitypred.entities.EvaluationModel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="train_TN" property="trainTn" jdbcType="INTEGER" />
+    <result column="train_TP" property="trainTp" jdbcType="INTEGER" />
+    <result column="train_FN" property="trainFn" jdbcType="INTEGER" />
+    <result column="train_FP" property="trainFp" jdbcType="INTEGER" />
+    <result column="train_Q" property="trainQ" jdbcType="DOUBLE" />
+    <result column="train_Sn" property="trainSn" jdbcType="DOUBLE" />
+    <result column="train_Sp" property="trainSp" jdbcType="DOUBLE" />
+    <result column="train_nums" property="trainNums" jdbcType="INTEGER" />
+    <result column="validate_TN" property="validateTn" jdbcType="INTEGER" />
+    <result column="validate_TP" property="validateTp" jdbcType="INTEGER" />
+    <result column="validate_FN" property="validateFn" jdbcType="INTEGER" />
+    <result column="validate_FP" property="validateFp" jdbcType="INTEGER" />
+    <result column="validate_Q" property="validateQ" jdbcType="DOUBLE" />
+    <result column="validate_Sn" property="validateSn" jdbcType="DOUBLE" />
+    <result column="validate_Sp" property="validateSp" jdbcType="DOUBLE" />
+    <result column="validate_nums" property="validateNums" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, train_TN, train_TP, train_FN, train_FP, train_Q, train_Sn, train_Sp, train_nums, 
+    validate_TN, validate_TP, validate_FN, validate_FP, validate_Q, validate_Sn, validate_Sp, 
+    validate_nums, type, time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from evaluation_model
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from evaluation_model
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.EvaluationModel" >
+    insert into evaluation_model (id, train_TN, train_TP, 
+      train_FN, train_FP, train_Q, 
+      train_Sn, train_Sp, train_nums, 
+      validate_TN, validate_TP, validate_FN, 
+      validate_FP, validate_Q, validate_Sn, 
+      validate_Sp, validate_nums, type, 
+      time)
+    values (#{id,jdbcType=INTEGER}, #{trainTn,jdbcType=INTEGER}, #{trainTp,jdbcType=INTEGER}, 
+      #{trainFn,jdbcType=INTEGER}, #{trainFp,jdbcType=INTEGER}, #{trainQ,jdbcType=DOUBLE}, 
+      #{trainSn,jdbcType=DOUBLE}, #{trainSp,jdbcType=DOUBLE}, #{trainNums,jdbcType=INTEGER}, 
+      #{validateTn,jdbcType=INTEGER}, #{validateTp,jdbcType=INTEGER}, #{validateFn,jdbcType=INTEGER}, 
+      #{validateFp,jdbcType=INTEGER}, #{validateQ,jdbcType=DOUBLE}, #{validateSn,jdbcType=DOUBLE}, 
+      #{validateSp,jdbcType=DOUBLE}, #{validateNums,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
+      #{time,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.EvaluationModel" >
+    insert into evaluation_model
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="trainTn != null" >
+        train_TN,
+      </if>
+      <if test="trainTp != null" >
+        train_TP,
+      </if>
+      <if test="trainFn != null" >
+        train_FN,
+      </if>
+      <if test="trainFp != null" >
+        train_FP,
+      </if>
+      <if test="trainQ != null" >
+        train_Q,
+      </if>
+      <if test="trainSn != null" >
+        train_Sn,
+      </if>
+      <if test="trainSp != null" >
+        train_Sp,
+      </if>
+      <if test="trainNums != null" >
+        train_nums,
+      </if>
+      <if test="validateTn != null" >
+        validate_TN,
+      </if>
+      <if test="validateTp != null" >
+        validate_TP,
+      </if>
+      <if test="validateFn != null" >
+        validate_FN,
+      </if>
+      <if test="validateFp != null" >
+        validate_FP,
+      </if>
+      <if test="validateQ != null" >
+        validate_Q,
+      </if>
+      <if test="validateSn != null" >
+        validate_Sn,
+      </if>
+      <if test="validateSp != null" >
+        validate_Sp,
+      </if>
+      <if test="validateNums != null" >
+        validate_nums,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="trainTn != null" >
+        #{trainTn,jdbcType=INTEGER},
+      </if>
+      <if test="trainTp != null" >
+        #{trainTp,jdbcType=INTEGER},
+      </if>
+      <if test="trainFn != null" >
+        #{trainFn,jdbcType=INTEGER},
+      </if>
+      <if test="trainFp != null" >
+        #{trainFp,jdbcType=INTEGER},
+      </if>
+      <if test="trainQ != null" >
+        #{trainQ,jdbcType=DOUBLE},
+      </if>
+      <if test="trainSn != null" >
+        #{trainSn,jdbcType=DOUBLE},
+      </if>
+      <if test="trainSp != null" >
+        #{trainSp,jdbcType=DOUBLE},
+      </if>
+      <if test="trainNums != null" >
+        #{trainNums,jdbcType=INTEGER},
+      </if>
+      <if test="validateTn != null" >
+        #{validateTn,jdbcType=INTEGER},
+      </if>
+      <if test="validateTp != null" >
+        #{validateTp,jdbcType=INTEGER},
+      </if>
+      <if test="validateFn != null" >
+        #{validateFn,jdbcType=INTEGER},
+      </if>
+      <if test="validateFp != null" >
+        #{validateFp,jdbcType=INTEGER},
+      </if>
+      <if test="validateQ != null" >
+        #{validateQ,jdbcType=DOUBLE},
+      </if>
+      <if test="validateSn != null" >
+        #{validateSn,jdbcType=DOUBLE},
+      </if>
+      <if test="validateSp != null" >
+        #{validateSp,jdbcType=DOUBLE},
+      </if>
+      <if test="validateNums != null" >
+        #{validateNums,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.EvaluationModel" >
+    update evaluation_model
+    <set >
+      <if test="trainTn != null" >
+        train_TN = #{trainTn,jdbcType=INTEGER},
+      </if>
+      <if test="trainTp != null" >
+        train_TP = #{trainTp,jdbcType=INTEGER},
+      </if>
+      <if test="trainFn != null" >
+        train_FN = #{trainFn,jdbcType=INTEGER},
+      </if>
+      <if test="trainFp != null" >
+        train_FP = #{trainFp,jdbcType=INTEGER},
+      </if>
+      <if test="trainQ != null" >
+        train_Q = #{trainQ,jdbcType=DOUBLE},
+      </if>
+      <if test="trainSn != null" >
+        train_Sn = #{trainSn,jdbcType=DOUBLE},
+      </if>
+      <if test="trainSp != null" >
+        train_Sp = #{trainSp,jdbcType=DOUBLE},
+      </if>
+      <if test="trainNums != null" >
+        train_nums = #{trainNums,jdbcType=INTEGER},
+      </if>
+      <if test="validateTn != null" >
+        validate_TN = #{validateTn,jdbcType=INTEGER},
+      </if>
+      <if test="validateTp != null" >
+        validate_TP = #{validateTp,jdbcType=INTEGER},
+      </if>
+      <if test="validateFn != null" >
+        validate_FN = #{validateFn,jdbcType=INTEGER},
+      </if>
+      <if test="validateFp != null" >
+        validate_FP = #{validateFp,jdbcType=INTEGER},
+      </if>
+      <if test="validateQ != null" >
+        validate_Q = #{validateQ,jdbcType=DOUBLE},
+      </if>
+      <if test="validateSn != null" >
+        validate_Sn = #{validateSn,jdbcType=DOUBLE},
+      </if>
+      <if test="validateSp != null" >
+        validate_Sp = #{validateSp,jdbcType=DOUBLE},
+      </if>
+      <if test="validateNums != null" >
+        validate_nums = #{validateNums,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.nwafu.cie.toxicitypred.entities.EvaluationModel" >
+    update evaluation_model
+    set train_TN = #{trainTn,jdbcType=INTEGER},
+      train_TP = #{trainTp,jdbcType=INTEGER},
+      train_FN = #{trainFn,jdbcType=INTEGER},
+      train_FP = #{trainFp,jdbcType=INTEGER},
+      train_Q = #{trainQ,jdbcType=DOUBLE},
+      train_Sn = #{trainSn,jdbcType=DOUBLE},
+      train_Sp = #{trainSp,jdbcType=DOUBLE},
+      train_nums = #{trainNums,jdbcType=INTEGER},
+      validate_TN = #{validateTn,jdbcType=INTEGER},
+      validate_TP = #{validateTp,jdbcType=INTEGER},
+      validate_FN = #{validateFn,jdbcType=INTEGER},
+      validate_FP = #{validateFp,jdbcType=INTEGER},
+      validate_Q = #{validateQ,jdbcType=DOUBLE},
+      validate_Sn = #{validateSn,jdbcType=DOUBLE},
+      validate_Sp = #{validateSp,jdbcType=DOUBLE},
+      validate_nums = #{validateNums,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
